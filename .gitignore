@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+#my added
+db.sqlite3
+/static
+myvenv
+.DS_Store
