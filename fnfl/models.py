@@ -9,6 +9,7 @@ class Lineup(models.Model):
     rb2 = models.CharField(max_length=50)
     wr1 = models.CharField(max_length=50)
     wr2 = models.CharField(max_length=50)
+    te = models.CharField(max_length=50)
     k = models.CharField(max_length=50)
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
