@@ -11,19 +11,25 @@
         <div class="page-header">
             <h1><a href="/">FNFL Dawgs</a></h1>
         </div>
-
-        {% for lineup in lineups %}
-        <div class="lineup">
-            <p>published: {{ lineup.published_date }}</p>
-            <h1><a href="">{{ lineup.week }}</a></h1>
-            <p>QB: {{ lineup.qb }}</p>
-            <p>RB: {{ lineup.rb1 }}</p>
-            <p>RB: {{ lineup.rb2 }}</p>
-            <p>WR: {{ lineup.wr1 }}</p>
-            <p>WR: {{ lineup.wr2 }}</p>
-            <p>TE: {{ lineup.te }}</p>
-            <p>K: {{ lineup.k }}</p>
+        
+        <div class="content container">
+            <div class="row">
+                <div class="col-md-8">
+                    {% for lineup in lineups %}
+                        <div class="lineup">
+                            <p>published: {{ lineup.published_date }}</p>
+                            <h1><a href="">{{ lineup.week }}</a></h1>
+                            <p>QB: {{ lineup.qb }}</p>
+                            <p>RB: {{ lineup.rb1 }}</p>
+                            <p>RB: {{ lineup.rb2 }}</p>
+                            <p>WR: {{ lineup.wr1 }}</p>
+                            <p>WR: {{ lineup.wr2 }}</p>
+                            <p>TE: {{ lineup.te }}</p>
+                            <p>K: {{ lineup.k }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        {% endfor %}
     </body>
 </html>
