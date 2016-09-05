@@ -1,14 +1,19 @@
+{% load staticfiles %}
+
 <html>
     <head>
         <title>FNFL Dawgs</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/fnfl.css' %}">
     </head>
     <body>
-        <div>
+        <div class="page-header">
             <h1><a href="/">FNFL Dawgs</a></h1>
         </div>
 
         {% for lineup in lineups %}
-        <div>
+        <div class="lineup">
             <p>published: {{ lineup.published_date }}</p>
             <h1><a href="">{{ lineup.week }}</a></h1>
             <p>QB: {{ lineup.qb }}</p>
