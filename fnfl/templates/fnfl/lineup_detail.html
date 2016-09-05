@@ -1,0 +1,19 @@
+{% extends 'fnfl/base.html' %}
+
+{% block content %}
+    <div class="post">
+        {% if lineup.published_date %}
+            <div class="date">
+                {{ lineup.published_date }}
+            </div>
+        {% endif %}
+        <h1>{{ lineup.week }}</h1>
+        <p>QB: {{ lineup.qb }}</p>
+        <p>RB: {{ lineup.rb1 }}</p>
+        <p>RB: {{ lineup.rb2 }}</p>
+        <p>WR: {{ lineup.wr1 }}</p>
+        <p>WR: {{ lineup.wr2 }}</p>
+        <p>TE: {{ lineup.te }}</p>
+        <p>K: {{ lineup.k }}</p>
+    </div>
+{% endblock %}
