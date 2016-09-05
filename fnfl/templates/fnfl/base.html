@@ -11,8 +11,12 @@
         <div class="page-header">
         {% if user.is_authenticated %}
             <a href="{% url 'lineup_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
+            <a href="{% url 'lineup_draft_list' %}" class="top-menu"><span class="glyphicon glyphicon-edit"></span></a>
+            <p class="top-menu">{{ user.username }}<small>(<a href="{% url 'logout' %}">Log out</a>)</small></p>
+        {% else %}
+            <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
         {% endif %}
-            <h1><a href="/">FNFL Dawgs</a></h1>
+            <h1><a href="{% url 'fnfl.views.lineup_list' %}">FNFL Dawgs</a></h1>
         </div>
         
         <div class="content container">
