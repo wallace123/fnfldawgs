@@ -4,10 +4,15 @@ from .models import Lineup
 from .forms import LineupForm
 from django.contrib.auth.decorators import login_required
 
+def welcome(request):
+    return render(request, 'fnfl/welcome.html', {})
+
+@login_required
 def lineup_list(request):
     lineups = Lineup.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
     return render(request, 'fnfl/lineup_list.html', {'lineups': lineups})
 
+@login_required
 def lineup_detail(request, pk):
     lineup = get_object_or_404(Lineup, pk=pk)
     return render(request, 'fnfl/lineup_detail.html', {'lineup': lineup})
