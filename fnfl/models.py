@@ -1,6 +1,12 @@
 from django.db import models
 from django.utils import timezone
 
+class Player(models.Model):
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    position = models.CharField(max_length=2)
+    team = models.CharField(max_length=4)
+
 class Lineup(models.Model):
     author = models.ForeignKey('auth.User')
     week = models.CharField(max_length=50)
