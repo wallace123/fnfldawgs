@@ -84,7 +84,7 @@ class Player(models.Model):
         (SAN_DEIGO, 'San Diego Chargers'),
         (BALTIMORE, 'Baltimore Ravens'),
         (CINCINATI, 'Cincinati Bengals'),
-        (CLEVELAND, 'Clevland Browns'),
+        (CLEVELAND, 'Cleveland Browns'),
         (PITTSBURGH, 'Pittsburgh Steelers'),
         (HOUSTON, 'Houston Texans'),
         (INDIANAPOLIS, 'Indianapolis Colts'),
@@ -126,3 +126,57 @@ class Lineup(models.Model):
 
     def __str__(self):
         return self.week
+
+class Score(models.Model):
+    player = models.ForeignKey(
+        'Player',
+        on_delete=models.CASCADE,
+    )
+    lineup_week = models.ForeignKey(
+        'Lineup',
+        on_delete=models.CASCADE,
+    )
+    tds = models.IntegerField(default=0)
+    pass_yds = models.IntegerField(default=0)
+    ints = models.IntegerField(default=0)
+    rush_yds = models.IntegerField(default=0)
+    rec_yds = models.IntegerField(default=0)
+    ret_tds = models.IntegerField(default=0)
+    two_pts = models.IntegerField(default=0)
+    fgs = models.IntegerField(default=0)
+    xps = models.IntegerField(default=0)
+
+    def _get_name_week(self):
+        return '%s %s' % (self.player, self.lineup_week)
+    name_week = property(_get_name_week)
+
+    def __str__(self):
+        return self.name_week
+
+    def _week_score(self):
+        total_score = 0
+        pass_score = 0
+        rush_score = 0
+        rec_score = 0
+
+        total_score = (self.tds*6) + (self.ret_tds*6) + \
+                      (self.fgs*3) + self.xps + \
+                      (self.two_pts*2) - (self.ints*2)
+
+        if (self.pass_yds >= 300):
+            pass_score = 6 + (int((self.pass_yds-300) / 50) * 3)
+        total_score += pass_score
+
+        if (self.rush_yds >= 100):
+            rush_score = 6 +(int((self.rush_yds-100) / 50) * 3)
+        total_score += rush_score
+
+        if (self.player.position == 'WR' and self.rec_yds >= 100):
+            rec_score = 6 + (int((self.rec_yds-100) / 50) * 3)
+
+        if (self.player.position != 'WR'):
+            rec_score = int(self.rec_yds / 50) * 3
+        total_score += rec_score
+
+        return total_score
+    week_score = property(_week_score)
