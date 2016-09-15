@@ -58,43 +58,43 @@ class Player(models.Model):
     JACKSONVILLE = 'JAX'
     TENNESSEE = 'TEN'
     TEAM_CHOICES = (
-        (DALLAS, 'Dallas Cowboys'),
-        (WASHINGTON, 'Washington Redskins'),
-        (NEW_YORK_G, 'New York Giants'),
-        (PHILIDELPHIA, 'Philidelphia Eagles'),
         (ARIZONA, 'Arizona Cardinals'),
-        (LOS_ANGELES, 'Los Angeles Rams'), 
-        (SAN_FRANSICO, 'San Fransico 49ers'),
-        (SEATTLE, 'Seattle Seahawks'),
-        (CHICAGO, 'Chicago Bears'),
-        (DETROIT, 'Detroit Lions'),
-        (GREEN_BAY, 'Green Bay Packers'),
-        (MINNESOTA, 'Minnesota Vikings'),
         (ATLANTA, 'Atlanta Falcons'),
-        (CAROLINA, 'Carolina Panthers'),
-        (NEW_ORLEANS, 'New Orleans Saints'),
-        (TAMPA_BAY, 'Tampa Bay Buccaneers'),
-        (BUFFALO, 'Buffalo Bills'),
-        (MIAMI, 'Miami Dolphins'),
-        (NEW_ENGLAND, 'New England Patriots'),
-        (NEW_YORK_J, 'New York Jets'),
-        (DENVER, 'Denver Broncos'),
-        (KANSAS_CITY, 'Kansas City Chiefs'),
-        (OAKLAND, 'Oakland Raiders'),
-        (SAN_DEIGO, 'San Diego Chargers'),
         (BALTIMORE, 'Baltimore Ravens'),
+        (BUFFALO, 'Buffalo Bills'),
+        (CAROLINA, 'Carolina Panthers'),
+        (CHICAGO, 'Chicago Bears'),
         (CINCINATI, 'Cincinati Bengals'),
         (CLEVELAND, 'Cleveland Browns'),
-        (PITTSBURGH, 'Pittsburgh Steelers'),
+        (DALLAS, 'Dallas Cowboys'),
+        (DENVER, 'Denver Broncos'),
+        (DETROIT, 'Detroit Lions'),
+        (GREEN_BAY, 'Green Bay Packers'),
         (HOUSTON, 'Houston Texans'),
         (INDIANAPOLIS, 'Indianapolis Colts'),
         (JACKSONVILLE, 'Jacksonville Jaguars'),
+        (KANSAS_CITY, 'Kansas City Chiefs'),
+        (LOS_ANGELES, 'Los Angeles Rams'), 
+        (MIAMI, 'Miami Dolphins'),
+        (MINNESOTA, 'Minnesota Vikings'),
+        (NEW_ORLEANS, 'New Orleans Saints'),
+        (NEW_ENGLAND, 'New England Patriots'),
+        (NEW_YORK_G, 'New York Giants'),
+        (NEW_YORK_J, 'New York Jets'),
+        (OAKLAND, 'Oakland Raiders'),
+        (PHILIDELPHIA, 'Philidelphia Eagles'),
+        (PITTSBURGH, 'Pittsburgh Steelers'),
+        (SAN_DEIGO, 'San Diego Chargers'),
+        (SAN_FRANSICO, 'San Fransico 49ers'),
+        (SEATTLE, 'Seattle Seahawks'),
+        (TAMPA_BAY, 'Tampa Bay Buccaneers'),
         (TENNESSEE, 'Tennessee Titans'),
+        (WASHINGTON, 'Washington Redskins'),
     )
     team = models.CharField(
         max_length=4,
         choices=TEAM_CHOICES,
-        default=DALLAS,
+        default=ARIZONA,
     )
 
     def _get_full_name(self):
@@ -102,21 +102,126 @@ class Player(models.Model):
     full_name = property(_get_full_name)
 
     def __str__(self):
-        return self.full_name
+        return '%s %s' % (self.full_name, self.lineup)
 
 class Lineup(models.Model):
     author = models.ForeignKey(
         'auth.User',
         on_delete=models.CASCADE,
     )
-    week = models.CharField(max_length=50)
-    qb = models.CharField(max_length=50)
-    rb1 = models.CharField(max_length=50)
-    rb2 = models.CharField(max_length=50)
-    wr1 = models.CharField(max_length=50)
-    wr2 = models.CharField(max_length=50)
-    te = models.CharField(max_length=50)
-    k = models.CharField(max_length=50)
+    WEEK_ONE = '1'
+    WEEK_TWO = '2'
+    WEEK_THREE = '3'
+    WEEK_FOUR = '4'
+    WEEK_FIVE = '5'
+    WEEK_SIX = '6'
+    WEEK_SEVEN = '7'
+    WEEK_EIGHT = '8'
+    WEEK_NINE = '9'
+    WEEK_TEN = '10'
+    WEEK_ELEVEN = '11'
+    WEEK_TWELVE = '12'
+    WEEK_THIRTEEN = '13'
+    WEEK_FOURTEEN = '14'
+    WEEK_FIFTEEN = '15'
+    WEEK_SIXTEEN = '16'
+    WEEK_SEVENTEEN = '17'
+    WILD_CARD = '18'
+    DIVISIONAL_ROUND = '19'
+    CONFERENCE_CHAMPIONSHIP = '20'
+    SUPER_BOWL = '21'
+    WEEK_CHOICES = (
+        (WEEK_ONE, 'Week 1'),
+        (WEEK_TWO, 'Week 2'),
+        (WEEK_THREE, 'Week 3'),
+        (WEEK_FOUR, 'Week 4'),
+        (WEEK_FIVE, 'Week 5'),
+        (WEEK_SIX, 'Week 6'),
+        (WEEK_SEVEN, 'Week 7'),
+        (WEEK_EIGHT, 'Week 8'),
+        (WEEK_NINE, 'Week 9'),
+        (WEEK_TEN, 'Week 10'),
+        (WEEK_ELEVEN, 'Week 11'),
+        (WEEK_TWELVE, 'Week 12'),
+        (WEEK_THIRTEEN, 'Week 13'),
+        (WEEK_FOURTEEN, 'Week 14'),
+        (WEEK_FIFTEEN, 'Week 15'),
+        (WEEK_SIXTEEN, 'Week 16'),
+        (WEEK_SEVENTEEN, 'Week 17'),
+        (WILD_CARD, 'Wild Card'),
+        (DIVISIONAL_ROUND, 'Divisional Round'),
+        (CONFERENCE_CHAMPIONSHIP, 'Conference Championship'),
+        (SUPER_BOWL, 'Super Bowl'),
+    )
+    week = models.CharField(
+        max_length=2,
+        choices=WEEK_CHOICES,
+        default=WEEK_ONE,
+    )
+
+    qb_position = models.CharField(max_length=2, default='QB')
+    qb_first_name = models.CharField(max_length=20)
+    qb_last_name = models.CharField(max_length=20)
+    qb_team = models.CharField(
+        max_length=4,
+        choices=Player.TEAM_CHOICES,
+        default=Player.ARIZONA,
+    )
+
+    rb1_position = models.CharField(max_length=2, default='RB')
+    rb1_first_name = models.CharField(max_length=20)
+    rb1_last_name = models.CharField(max_length=20)
+    rb1_team = models.CharField(
+        max_length=4,
+        choices=Player.TEAM_CHOICES,
+        default=Player.ARIZONA,
+    )
+
+    rb2_position = models.CharField(max_length=2, default='RB')
+    rb2_first_name = models.CharField(max_length=20)
+    rb2_last_name = models.CharField(max_length=20)
+    rb2_team = models.CharField(
+        max_length=4,
+        choices=Player.TEAM_CHOICES,
+        default=Player.ARIZONA,
+    )
+
+    wr1_position = models.CharField(max_length=2, default='WR')
+    wr1_first_name = models.CharField(max_length=20)
+    wr1_last_name = models.CharField(max_length=20)
+    wr1_team = models.CharField(
+        max_length=4,
+        choices=Player.TEAM_CHOICES,
+        default=Player.ARIZONA,
+    )
+
+    wr2_position = models.CharField(max_length=2, default='WR')
+    wr2_first_name = models.CharField(max_length=20)
+    wr2_last_name = models.CharField(max_length=20)
+    wr2_team = models.CharField(
+        max_length=4,
+        choices=Player.TEAM_CHOICES,
+        default=Player.ARIZONA,
+    )
+
+    te_position = models.CharField(max_length=2, default='TE')
+    te_first_name = models.CharField(max_length=20)
+    te_last_name = models.CharField(max_length=20)
+    te_team = models.CharField(
+        max_length=4,
+        choices=Player.TEAM_CHOICES,
+        default=Player.ARIZONA,
+    )
+
+    k_position = models.CharField(max_length=2, default='K')
+    k_first_name = models.CharField(max_length=20)
+    k_last_name = models.CharField(max_length=20)
+    k_team = models.CharField(
+        max_length=4,
+        choices=Player.TEAM_CHOICES,
+        default=Player.ARIZONA,
+    )
+
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
 
@@ -153,7 +258,7 @@ class Score(models.Model):
     def __str__(self):
         return self.name_week
 
-    def _week_score(self):
+    def week_score(self):
         total_score = 0
         pass_score = 0
         rush_score = 0
@@ -179,4 +284,4 @@ class Score(models.Model):
         total_score += rec_score
 
         return total_score
-    week_score = property(_week_score)
+    week_score = property(week_score)
