@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from .models import Lineup
-from .forms import LineupForm
+from .models import Player, Lineup, Score
+from .forms import PlayerForm, LineupForm, ScoreForm
 from django.contrib.auth.decorators import login_required
 
 def welcome(request):
@@ -29,6 +29,18 @@ def lineup_new(request):
     else:
         form = LineupForm()
     return render(request, 'fnfl/lineup_edit.html', {'form': form})
+
+@login_required
+def player_new(request):
+    if request.method == "POST":
+        form = PlayerForm(request.POST)
+        if form.is_valid():
+            player = player.save(commit=False)
+            lineup.save()
+            return redirect('lineup_detail', pk=lineup.pk)
+    else:
+        form = PlayerForm()
+    return render(request, 'fnfl/lineup_detail.html', {'form': form})
 
 @login_required
 def lineup_edit(request, pk):

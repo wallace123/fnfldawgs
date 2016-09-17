@@ -3,14 +3,7 @@
 {% block content %}
     {% for lineup in lineups %}
         <div class="lineup">
-            <h1><a href="{% url 'lineup_detail' pk=lineup.pk %}">Week {{ lineup.week }}</a></h1>
-            <h3>QB: <span style="font-size: 80%">{{ lineup.qb_first_name }} {{lineup.qb_last_name }} {{lineup.qb_team }}</span></h3>
-            <h3>RB: <span style="font-size: 80%">{{ lineup.rb1_first_name }} {{ lineup.rb1_last_name }} {{lineup.rb1_team }}</span></h3>
-            <h3>RB: <span style="font-size: 80%">{{ lineup.rb2_first_name }} {{ lineup.rb2_last_name }} {{lineup.rb2_team }}</span></h3>
-            <h3>WR: <span style="font-size: 80%">{{ lineup.wr1_first_name }} {{ lineup.wr1_last_name }} {{ lineup.wr1_team }}</span></h3>
-            <h3>WR: <span style="font-size: 80%">{{ lineup.wr2_first_name }} {{ lineup.wr2_last_name }} {{ lineup.wr2_team }}</span></h3>
-            <h3>TE: <span style="font-size: 80%">{{ lineup.te_first_name }} {{ lineup.te_last_name }} {{ lineup.te_team }}</span></h3>
-            <h3>K: <span style="font-size: 80%">{{ lineup.k_first_name }} {{ lineup.k_last_name }} {{ lineup.k_team }}</span></h3>
+            <h1><a href="{% url 'lineup_detail' pk=lineup.pk %}">{{ lineup.week }}</a></h1>
             <div class="date">
                 <p>published: {{ lineup.published_date }}</p>
             </div>

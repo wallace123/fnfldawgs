@@ -3,11 +3,13 @@ from django.utils import timezone
 
 class Player(models.Model):
     lineup = models.ForeignKey(
-        'Lineup',
+        'fnfl.Lineup',
+        related_name='player',
         on_delete=models.CASCADE,
     )
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
+
+    name = models.CharField(max_length=40)
+
     QUARTERBACK = 'QB'
     RUNNING_BACK = 'RB'
     WIDE_RECEIVER = 'WR'
@@ -20,11 +22,13 @@ class Player(models.Model):
         (TIGHT_END, 'Tight End'),
         (KICKER, 'Kicker'),
     )
+
     position = models.CharField(
         max_length=2,
         choices=POSITION_CHOICES,
         default=QUARTERBACK,
     )
+
     DALLAS = 'DAL'
     WASHINGTON = 'WASH'
     NEW_YORK_G = 'NYG'
@@ -91,45 +95,43 @@ class Player(models.Model):
         (TENNESSEE, 'Tennessee Titans'),
         (WASHINGTON, 'Washington Redskins'),
     )
+
     team = models.CharField(
         max_length=4,
         choices=TEAM_CHOICES,
         default=ARIZONA,
     )
 
-    def _get_full_name(self):
-        return '%s %s' % (self.first_name, self.last_name)
-    full_name = property(_get_full_name)
-
     def __str__(self):
-        return '%s %s' % (self.full_name, self.lineup)
+        return self.name
 
 class Lineup(models.Model):
     author = models.ForeignKey(
         'auth.User',
         on_delete=models.CASCADE,
     )
-    WEEK_ONE = '1'
-    WEEK_TWO = '2'
-    WEEK_THREE = '3'
-    WEEK_FOUR = '4'
-    WEEK_FIVE = '5'
-    WEEK_SIX = '6'
-    WEEK_SEVEN = '7'
-    WEEK_EIGHT = '8'
-    WEEK_NINE = '9'
-    WEEK_TEN = '10'
-    WEEK_ELEVEN = '11'
-    WEEK_TWELVE = '12'
-    WEEK_THIRTEEN = '13'
-    WEEK_FOURTEEN = '14'
-    WEEK_FIFTEEN = '15'
-    WEEK_SIXTEEN = '16'
-    WEEK_SEVENTEEN = '17'
-    WILD_CARD = '18'
-    DIVISIONAL_ROUND = '19'
-    CONFERENCE_CHAMPIONSHIP = '20'
-    SUPER_BOWL = '21'
+
+    WEEK_ONE = 'Week 1'
+    WEEK_TWO = 'Week 2'
+    WEEK_THREE = 'Week 3'
+    WEEK_FOUR = 'Week 4'
+    WEEK_FIVE = 'Week 5'
+    WEEK_SIX = 'Week 6'
+    WEEK_SEVEN = 'Week 7'
+    WEEK_EIGHT = 'Week 8'
+    WEEK_NINE = 'Week 9'
+    WEEK_TEN = 'Week 10'
+    WEEK_ELEVEN = 'Week 11'
+    WEEK_TWELVE = 'Week 12'
+    WEEK_THIRTEEN = 'Week 13'
+    WEEK_FOURTEEN = 'Week 14'
+    WEEK_FIFTEEN = 'Week 15'
+    WEEK_SIXTEEN = 'Week 16'
+    WEEK_SEVENTEEN = 'Week 17'
+    WEEK_EIGHTEEN = 'Wild Card'
+    WEEK_NINETEEN = 'Divisional Round'
+    WEEK_TWENTY = 'Conference Championship'
+    WEEK_TWENTY_ONE = 'Super Bowl'
     WEEK_CHOICES = (
         (WEEK_ONE, 'Week 1'),
         (WEEK_TWO, 'Week 2'),
@@ -148,78 +150,16 @@ class Lineup(models.Model):
         (WEEK_FIFTEEN, 'Week 15'),
         (WEEK_SIXTEEN, 'Week 16'),
         (WEEK_SEVENTEEN, 'Week 17'),
-        (WILD_CARD, 'Wild Card'),
-        (DIVISIONAL_ROUND, 'Divisional Round'),
-        (CONFERENCE_CHAMPIONSHIP, 'Conference Championship'),
-        (SUPER_BOWL, 'Super Bowl'),
+        (WEEK_EIGHTEEN, 'Wild Card'),
+        (WEEK_NINETEEN, 'Divisional Round'),
+        (WEEK_TWENTY, 'Conference Championship'),
+        (WEEK_TWENTY_ONE, 'Super Bowl'),
     )
+
     week = models.CharField(
-        max_length=2,
+        max_length=24,
         choices=WEEK_CHOICES,
         default=WEEK_ONE,
-    )
-
-    qb_position = models.CharField(max_length=2, default='QB')
-    qb_first_name = models.CharField(max_length=20)
-    qb_last_name = models.CharField(max_length=20)
-    qb_team = models.CharField(
-        max_length=4,
-        choices=Player.TEAM_CHOICES,
-        default=Player.ARIZONA,
-    )
-
-    rb1_position = models.CharField(max_length=2, default='RB')
-    rb1_first_name = models.CharField(max_length=20)
-    rb1_last_name = models.CharField(max_length=20)
-    rb1_team = models.CharField(
-        max_length=4,
-        choices=Player.TEAM_CHOICES,
-        default=Player.ARIZONA,
-    )
-
-    rb2_position = models.CharField(max_length=2, default='RB')
-    rb2_first_name = models.CharField(max_length=20)
-    rb2_last_name = models.CharField(max_length=20)
-    rb2_team = models.CharField(
-        max_length=4,
-        choices=Player.TEAM_CHOICES,
-        default=Player.ARIZONA,
-    )
-
-    wr1_position = models.CharField(max_length=2, default='WR')
-    wr1_first_name = models.CharField(max_length=20)
-    wr1_last_name = models.CharField(max_length=20)
-    wr1_team = models.CharField(
-        max_length=4,
-        choices=Player.TEAM_CHOICES,
-        default=Player.ARIZONA,
-    )
-
-    wr2_position = models.CharField(max_length=2, default='WR')
-    wr2_first_name = models.CharField(max_length=20)
-    wr2_last_name = models.CharField(max_length=20)
-    wr2_team = models.CharField(
-        max_length=4,
-        choices=Player.TEAM_CHOICES,
-        default=Player.ARIZONA,
-    )
-
-    te_position = models.CharField(max_length=2, default='TE')
-    te_first_name = models.CharField(max_length=20)
-    te_last_name = models.CharField(max_length=20)
-    te_team = models.CharField(
-        max_length=4,
-        choices=Player.TEAM_CHOICES,
-        default=Player.ARIZONA,
-    )
-
-    k_position = models.CharField(max_length=2, default='K')
-    k_first_name = models.CharField(max_length=20)
-    k_last_name = models.CharField(max_length=20)
-    k_team = models.CharField(
-        max_length=4,
-        choices=Player.TEAM_CHOICES,
-        default=Player.ARIZONA,
     )
 
     created_date = models.DateTimeField(default=timezone.now)
@@ -234,11 +174,12 @@ class Lineup(models.Model):
 
 class Score(models.Model):
     player = models.ForeignKey(
-        'Player',
+        'fnfl.Player',
+        related_name='player',
         on_delete=models.CASCADE,
     )
     lineup_week = models.ForeignKey(
-        'Lineup',
+        'fnfl.Lineup',
         on_delete=models.CASCADE,
     )
     tds = models.IntegerField(default=0)
@@ -246,7 +187,6 @@ class Score(models.Model):
     ints = models.IntegerField(default=0)
     rush_yds = models.IntegerField(default=0)
     rec_yds = models.IntegerField(default=0)
-    ret_tds = models.IntegerField(default=0)
     two_pts = models.IntegerField(default=0)
     fgs = models.IntegerField(default=0)
     xps = models.IntegerField(default=0)
@@ -264,7 +204,7 @@ class Score(models.Model):
         rush_score = 0
         rec_score = 0
 
-        total_score = (self.tds*6) + (self.ret_tds*6) + \
+        total_score = (self.tds*6) + \
                       (self.fgs*3) + self.xps + \
                       (self.two_pts*2) - (self.ints*2)
 
