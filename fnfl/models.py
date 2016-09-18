@@ -173,12 +173,12 @@ class Lineup(models.Model):
         return self.week
 
 class Score(models.Model):
-    p_score = models.ForeignKey(
+    player = models.ForeignKey(
         'fnfl.Player',
         related_name='p_score',
         on_delete=models.CASCADE,
     )
-    l_score = models.ForeignKey(
+    lineup_week = models.ForeignKey(
         'fnfl.Lineup',
         related_name='l_score',
         on_delete=models.CASCADE,
