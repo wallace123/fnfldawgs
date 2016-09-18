@@ -5,13 +5,23 @@
         <div class="lineup">
             <p class="date">created: {{ lineup.created_date|date:'d-m-Y' }}</p>
             <h1><a href="{% url 'fnfl.views.lineup_detail' pk=lineup.pk %}">{{ lineup.week }}</a></h1>
-            <h3>QB: <span style="font-size: 80%">{{ lineup.qb_first_name }} {{lineup.qb_last_name }} {{lineup.qb_team }}</span></h3>
-            <h3>RB: <span style="font-size: 80%">{{ lineup.rb1_first_name }} {{ lineup.rb1_last_name }} {{lineup.rb1_team }}</span></h3>
-            <h3>RB: <span style="font-size: 80%">{{ lineup.rb2_first_name }} {{ lineup.rb2_last_name }} {{lineup.rb2_team }}</span></h3>
-            <h3>WR: <span style="font-size: 80%">{{ lineup.wr1_first_name }} {{ lineup.wr1_last_name }} {{ lineup.wr1_team }}</span></h3>
-            <h3>WR: <span style="font-size: 80%">{{ lineup.wr2_first_name }} {{ lineup.wr2_last_name }} {{ lineup.wr2_team }}</span></h3>
-            <h3>TE: <span style="font-size: 80%">{{ lineup.te_first_name }} {{ lineup.te_last_name }} {{ lineup.te_team }}</span></h3>
-            <h3>K: <span style="font-size: 80%">{{ lineup.k_first_name }} {{ lineup.k_last_name }} {{ lineup.k_team }}</span></h3>
+        {% for p in lineup.player.all %}
+            {% if p.position == "QB" %}
+                <p>{{p.position}} {{p.name}} {{p.team}}</p>
+            {% endif %}
+            {% if p.position == "RB" %}
+                <p>{{p.position}} {{p.name}} {{p.team}}</p>
+            {% endif %}
+            {% if p.position == "WR" %}
+                <p>{{p.position}} {{p.name}} {{p.team}}</p>
+            {% endif %}
+            {% if p.position == "TE" %}
+                <p>{{p.position}} {{p.name}} {{p.team}}</p>
+            {% endif %}
+            {% if p.position == "K" %}
+                <p>{{p.position}} {{p.name}} {{p.team}}</p>
+            {% endif %}
+        {% endfor %}
         </div>
     {% endfor %}
 {% endblock %}
