@@ -10,5 +10,5 @@ urlpatterns = [
     url(r'^drafts/$', views.lineup_draft_list, name='lineup_draft_list'),
     url(r'^lineup/(?P<pk>\d+)/publish/$', views.lineup_publish, name='lineup_publish'),
     url(r'^lineup/(?P<pk>\d+)/remove/$', views.lineup_remove, name='lineup_remove'),
-    url(r'^player/new/$', views.player_new, name='player_new'),
+    url(r'^lineup/(?P<pk>\d+)/player/$', views.add_player, name='add_player'),
 ]

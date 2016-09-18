@@ -31,16 +31,18 @@ def lineup_new(request):
     return render(request, 'fnfl/lineup_edit.html', {'form': form})
 
 @login_required
-def player_new(request):
+def add_player(request, pk):
+    lineup = get_object_or_404(Lineup, pk=pk)
     if request.method == "POST":
         form = PlayerForm(request.POST)
         if form.is_valid():
-            player = player.save(commit=False)
-            lineup.save()
-            return redirect('lineup_detail', pk=lineup.pk)
+            player = form.save(commit=False)
+            player.lineup = lineup
+            player.save()
+            return redirect('fnfl.views.lineup_detail', pk=lineup.pk)
     else:
         form = PlayerForm()
-    return render(request, 'fnfl/lineup_detail.html', {'form': form})
+    return render(request, 'fnfl/add_player.html', {'form': form})
 
 @login_required
 def lineup_edit(request, pk):

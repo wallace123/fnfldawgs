@@ -12,6 +12,7 @@
         {% if user.is_authenticated %}
             <a class="btn btn-default" href="{% url 'lineup_edit' pk=lineup.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
             <a class="btn btn-default" href="{% url 'lineup_remove' pk=lineup.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+            <a class="btn btn-default" href="{% url 'add_player' pk=lineup.pk %}">Add Player</a>
         {% else %}
             <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
         {% endif %}
