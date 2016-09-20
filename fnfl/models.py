@@ -173,14 +173,14 @@ class Lineup(models.Model):
         return self.week
 
 class Score(models.Model):
-    player = models.ForeignKey(
+    player_to_score = models.ForeignKey(
         'fnfl.Player',
-        related_name='p_score',
+        related_name='player_to_score',
         on_delete=models.CASCADE,
     )
-    lineup_week = models.ForeignKey(
+    lineup_to_score = models.ForeignKey(
         'fnfl.Lineup',
-        related_name='l_score',
+        related_name='lineup_to_score',
         on_delete=models.CASCADE,
     )
     tds = models.IntegerField(default=0)
@@ -193,7 +193,7 @@ class Score(models.Model):
     xps = models.IntegerField(default=0)
 
     def _get_name_week(self):
-        return '%s %s' % (self.player, self.lineup_week)
+        return '%s %s' % (self.player_to_score, self.lineup_to_score)
     name_week = property(_get_name_week)
 
     def __str__(self):
@@ -217,10 +217,10 @@ class Score(models.Model):
             rush_score = 6 +(int((self.rush_yds-100) / 50) * 3)
         total_score += rush_score
 
-        if (self.player.position == 'WR' and self.rec_yds >= 100):
+        if (self.player_to_score.position == 'WR' and self.rec_yds >= 100):
             rec_score = 6 + (int((self.rec_yds-100) / 50) * 3)
 
-        if (self.player.position != 'WR'):
+        if (self.player_to_score.position != 'WR'):
             rec_score = int(self.rec_yds / 50) * 3
         total_score += rec_score
 

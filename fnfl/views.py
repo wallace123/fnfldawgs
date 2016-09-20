@@ -45,6 +45,22 @@ def add_player(request, pk):
     return render(request, 'fnfl/add_player.html', {'form': form})
 
 @login_required
+def add_score(request, pk, player_pk):
+    lineup = get_object_or_404(Lineup, pk=pk)
+    player = get_object_or_404(Player, pk=player_pk)
+    if request.method == "POST":
+        form = ScoreForm(request.POST)
+        if form.is_valid():
+            score = form.save(commit=False)
+            score.lineup_to_score = lineup
+            score.player_to_score = player
+            score.save()
+            return redirect('fnfl.views.lineup_detail', pk=lineup.pk)
+    else:
+        form = ScoreForm()
+    return render(request, 'fnfl/add_score.html', {'form': form})
+
+@login_required
 def lineup_edit(request, pk):
     lineup = get_object_or_404(Lineup, pk=pk)
     if request.method == "POST":
