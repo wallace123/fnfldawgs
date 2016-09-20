@@ -17,47 +17,44 @@
             <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
         {% endif %}
         <h1>{{ lineup.week }}</h1>
-        {% for p in lineup.player.all %}
-            {% if p.position == "QB" %}
-                <a href="{% url 'add_score' pk=lineup.pk player_pk=p.pk %}"><p>{{p.position}} {{p.name}} {{p.team}}</p></a>
-                {% for s in lineup.lineup_to_score.all %}
-                    {% if p.name in s.name_week %}
-                        <p>QB Score: {{s.week_score}}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-            {% if p.position == "RB" %}
-                <a href="{% url 'add_score' pk=lineup.pk player_pk=p.pk %}"><p>{{p.position}} {{p.name}} {{p.team}}</p></a>
-                {% for s in lineup.lineup_to_score.all %}
-                    {% if p.name in s.name_week %}
-                        <p>RB Score: {{s.week_score}}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-            {% if p.position == "WR" %}
-                <a href="{% url 'add_score' pk=lineup.pk player_pk=p.pk %}"><p>{{p.position}} {{p.name}} {{p.team}}</p></a>
-                {% for s in lineup.lineup_to_score.all %}
-                    {% if p.name in s.name_week %}
-                        <p>WR Score: {{s.week_score}}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-            {% if p.position == "TE" %}
-                <a href="{% url 'add_score' pk=lineup.pk player_pk=p.pk %}"><p>{{p.position}} {{p.name}} {{p.team}}</p></a>
-                {% for s in lineup.lineup_to_score.all %}
-                    {% if p.name in s.name_week %}
-                        <p>TE Score: {{s.week_score}}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-            {% if p.position == "K" %}
-                <a href="{% url 'add_score' pk=lineup.pk player_pk=p.pk %}"><p>{{p.position}} {{p.name}} {{p.team}}</p></a>
-                {% for s in lineup.lineup_to_score.all %}
-                    {% if p.name in s.name_week %}
-                        <p>K Score: {{s.week_score}}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        {% endfor %}
+
+        <span>
+        <a href="{% url 'add_score' pk=lineup.pk player_pk=qb.pk %}">
+            <p>{{qb.position}} {{qb.name}} {{qb.team}}</p>
+        </a>
+            <p>  Score - {{qb_score}}</p>
+        </span>
+
+        <a href="{% url 'add_score' pk=lineup.pk player_pk=rb1.pk %}">
+            <p>{{rb1.position}} {{rb1.name}} {{rb1.team}}</p>
+        </a>
+            <p>  Score - {{rb1_score}}</p>
+
+        <a href="{% url 'add_score' pk=lineup.pk player_pk=rb2.pk %}">
+            <p>{{rb2.position}} {{rb2.name}} {{rb2.team}}</p>
+        </a>
+            <p>  Score - {{rb2_score}}</p>
+
+        <a href="{% url 'add_score' pk=lineup.pk player_pk=wr1.pk %}">
+            <p>{{wr1.position}} {{wr1.name}} {{wr1.team}}</p>
+        </a>
+            <p>  Score - {{wr1_score}}</p>
+
+        <a href="{% url 'add_score' pk=lineup.pk player_pk=wr2.pk %}">
+            <p>{{wr2.position}} {{wr2.name}} {{wr2.team}}</p>
+        </a>
+            <p>  Score - {{wr2_score}}</p>
+
+        <a href="{% url 'add_score' pk=lineup.pk player_pk=te.pk %}">
+            <p>{{te.position}} {{te.name}} {{te.team}}</p>
+        </a>
+            <p>  Score - {{te_score}}</p>
+
+        <a href="{% url 'add_score' pk=lineup.pk player_pk=k.pk %}">
+            <p>{{k.position}} {{k.name}} {{k.team}}</p>
+        </a>
+            <p>  Score - {{k_score}}</p>
+
+        <p>Total Score: {{total_week_score}}</p>
     </div>
 {% endblock %}

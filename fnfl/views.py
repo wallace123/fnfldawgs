@@ -15,7 +15,85 @@ def lineup_list(request):
 @login_required
 def lineup_detail(request, pk):
     lineup = get_object_or_404(Lineup, pk=pk)
-    return render(request, 'fnfl/lineup_detail.html', {'lineup': lineup})
+    player = Player.objects.filter(lineup=lineup)
+    score = Score.objects.filter(lineup_to_score=lineup)
+
+    qb_player = ""
+    rb1_player = ""
+    rb2_player = ""
+    wr1_player = ""
+    wr2_player = ""
+    te_player = ""
+    k_player = ""
+
+    qb_score = 0
+    rb1_score = 0
+    rb2_score = 0
+    wr1_score = 0
+    wr2_score = 0
+    te_score = 0
+    k_score = 0
+
+    for p in player:
+        if p.position == 'QB':
+            qb_player = p
+            s = get_object_or_404(Score, lineup_to_score=lineup,
+                player_to_score=p)
+            qb_score = s.week_score
+        if p.position == 'RB' and rb1_player == '':
+            rb1_player = p
+            s = get_object_or_404(Score, lineup_to_score=lineup,
+                player_to_score=p)
+            rb1_score = s.week_score
+        if p.position == 'RB' and rb1_player != '':
+            rb2_player = p
+            s = get_object_or_404(Score, lineup_to_score=lineup,
+                player_to_score=p)
+            rb2_score = s.week_score
+        if p.position == 'WR' and wr1_player == '':
+            wr1_player = p
+            s = get_object_or_404(Score, lineup_to_score=lineup,
+                player_to_score=p)
+            wr1_score = s.week_score
+        if p.position == 'WR' and wr1_player != '':
+            wr2_player = p
+            s = get_object_or_404(Score, lineup_to_score=lineup,
+                player_to_score=p)
+            wr2_score = s.week_score
+        if p.position == 'TE':
+            te_player = p
+            s = get_object_or_404(Score, lineup_to_score=lineup,
+                player_to_score=p)
+            te_score = s.week_score
+        if p.position == 'K':
+            k_player = p
+            s = get_object_or_404(Score, lineup_to_score=lineup,
+                player_to_score=p)
+            k_score = s.week_score
+
+    total_week_score = 0
+
+    for s in score:
+        total_week_score += s.week_score
+
+    return render(request, 'fnfl/lineup_detail.html', 
+        {'lineup': lineup,
+         'total_week_score': total_week_score,
+         'qb': qb_player,
+         'rb1': rb1_player,
+         'rb2': rb2_player,
+         'wr1': wr1_player,
+         'wr2': wr2_player,
+         'te': te_player,
+         'k': k_player,
+         'qb_score': qb_score,
+         'rb1_score': rb1_score,
+         'rb2_score': rb2_score,
+         'wr1_score': wr1_score,
+         'wr2_score': wr2_score,
+         'te_score': te_score,
+         'k_score': k_score,}
+    )
 
 @login_required
 def lineup_new(request):
