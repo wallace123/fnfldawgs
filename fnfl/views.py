@@ -37,39 +37,62 @@ def lineup_detail(request, pk):
     for p in player:
         if p.position == 'QB':
             qb_player = p
-            s = get_object_or_404(Score, lineup_to_score=lineup,
-                player_to_score=p)
-            qb_score = s.week_score
+            try:
+                s = Score.objects.get(lineup_to_score=lineup,
+                    player_to_score=p)
+                qb_score = s.week_score
+            except:
+                pass
         if p.position == 'RB' and rb1_player == '':
             rb1_player = p
-            s = get_object_or_404(Score, lineup_to_score=lineup,
-                player_to_score=p)
-            rb1_score = s.week_score
+            try:
+                s = Score.objects.get(lineup_to_score=lineup,
+                    player_to_score=p)
+                rb1_score = s.week_score
+            except:
+                pass
+            continue
         if p.position == 'RB' and rb1_player != '':
             rb2_player = p
-            s = get_object_or_404(Score, lineup_to_score=lineup,
-                player_to_score=p)
-            rb2_score = s.week_score
+            try:
+                s = Score.objects.get(lineup_to_score=lineup,
+                    player_to_score=p)
+                rb2_score = s.week_score
+            except:
+                pass
         if p.position == 'WR' and wr1_player == '':
             wr1_player = p
-            s = get_object_or_404(Score, lineup_to_score=lineup,
-                player_to_score=p)
-            wr1_score = s.week_score
+            try:
+                s = Score.objects.get(lineup_to_score=lineup,
+                    player_to_score=p)
+                wr1_score = s.week_score
+            except:
+                pass
+            continue
         if p.position == 'WR' and wr1_player != '':
             wr2_player = p
-            s = get_object_or_404(Score, lineup_to_score=lineup,
-                player_to_score=p)
-            wr2_score = s.week_score
+            try:
+                s = Score.objects.get(lineup_to_score=lineup,
+                    player_to_score=p)
+                wr2_score = s.week_score
+            except:
+                pass
         if p.position == 'TE':
             te_player = p
-            s = get_object_or_404(Score, lineup_to_score=lineup,
-                player_to_score=p)
-            te_score = s.week_score
+            try:
+                s = Score.objects.get(lineup_to_score=lineup,
+                    player_to_score=p)
+                te_score = s.week_score
+            except:
+                pass
         if p.position == 'K':
             k_player = p
-            s = get_object_or_404(Score, lineup_to_score=lineup,
-                player_to_score=p)
-            k_score = s.week_score
+            try:
+                s = Score.objects.get(lineup_to_score=lineup,
+                    player_to_score=p)
+                k_score = s.week_score
+            except:
+                pass
 
     total_week_score = 0
 
