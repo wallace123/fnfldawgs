@@ -4,7 +4,7 @@
     {% for lineup in lineups %}
         <div class="lineup">
             <p class="date">created: {{ lineup.created_date|date:'d-m-Y' }}</p>
-            <h1><a href="{% url 'fnfl.views.lineup_detail' pk=lineup.pk %}">{{ lineup.week }}</a></h1>
+            <h1><a href="{% url 'lineup_detail' pk=lineup.pk %}">{{ lineup.week }}</a></h1>
         {% for p in lineup.player.all %}
             {% if p.position == "QB" %}
                 <p>{{p.position}} {{p.name}} {{p.team}}</p>
