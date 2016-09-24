@@ -197,6 +197,30 @@ def add_player(request, pk):
     return render(request, 'fnfl/add_player.html', {'form': form})
 
 
+@login_required
+def edit_player(request, pk, player_pk):
+    lineup = get_object_or_404(Lineup, pk=pk)
+    player = get_object_or_404(Player, pk=player_pk)
+    if request.method == 'POST':
+        form = PlayerForm(request.POST, instance=player)
+        if form.is_valid():
+            player = form.save(commit=False)
+            player.lineup = lineup
+            player.save()
+            return redirect('lineup_detail', pk=lineup.pk)
+    else:
+        form = PlayerForm(instance=player)
+    return render(request, 'fnfl/edit_player.html', {'form': form})
+
+
+@login_required
+def remove_player(request, pk, player_pk):
+    lineup = get_object_or_404(Lineup, pk=pk)
+    player = get_object_or_404(Player, pk=player_pk)
+    player.delete()
+    return redirect('lineup_list')
+
+
 # Score Views
 
 @login_required

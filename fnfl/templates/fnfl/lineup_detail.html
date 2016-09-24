@@ -22,6 +22,8 @@
             <a href="{% url 'add_score' pk=lineup.pk player_pk=qb.pk %}">
                 <p>{{qb.position}} {{qb.name}} {{qb.team}}</p>
             </a>
+            <a class="btn btn-default" href="{% url 'edit_player' pk=lineup.pk player_pk=qb.pk %}">Edit QB</a>
+            <a class="btn btn-default" href="{% url 'remove_player' pk=lineup.pk player_pk=qb.pk %}">Remove QB</a>
                 <p>  Score - {{qb_score}}</p>
         {% endif %}
 
