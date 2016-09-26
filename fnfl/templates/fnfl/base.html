@@ -14,6 +14,7 @@
             <a href="{% url 'lineup_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
             <a href="{% url 'lineup_draft_list' %}" class="top-menu"><span class="glyphicon glyphicon-edit"></span></a>
             <a href="{% url 'lineup_list' %}" class="top-menu"><span class="glyphicon glyphicon-list"></span></a>
+            <a href="{% url 'player_usage' %}" class="top-menu"><span class="glyphicon glyphicon-asterisk"></span></a>
             <p class="top-menu">{{ user.username }}<small>(<a href="{% url 'logout' %}">Log out</a>)</small></p>
         {% else %}
             <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>

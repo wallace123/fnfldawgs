@@ -3,6 +3,7 @@ from django.utils import timezone
 from .models import Player, Lineup, Score
 from .forms import PlayerForm, LineupForm, ScoreForm
 from django.contrib.auth.decorators import login_required
+from collections import Counter
 
 # Start Page
 def welcome(request):
@@ -34,13 +35,13 @@ def lineup_publish(request, pk):
 
 @login_required
 def lineup_draft_list(request):
-    lineups = Lineup.objects.filter(published_date__isnull=True).order_by('created_date')
+    lineups = Lineup.objects.filter(published_date__isnull=True, author=request.user).order_by('created_date')
     return render(request, 'fnfl/lineup_draft_list.html', {'lineups': lineups})
 
 
 @login_required
 def lineup_list(request):
-    lineups = Lineup.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    lineups = Lineup.objects.filter(published_date__lte=timezone.now(), author=request.user).order_by('published_date')
     return render(request, 'fnfl/lineup_list.html', {'lineups': lineups})
 
 
@@ -185,6 +186,10 @@ def lineup_remove(request, pk):
 @login_required
 def add_player(request, pk):
     lineup = get_object_or_404(Lineup, pk=pk)
+    player_count = Player.objects.filter(lineup=lineup).count()
+    if player_count == 7:
+        return redirect('lineup_detail', pk=lineup.pk)
+
     if request.method == "POST":
         form = PlayerForm(request.POST)
         if form.is_valid():
@@ -227,6 +232,12 @@ def remove_player(request, pk, player_pk):
 def add_score(request, pk, player_pk):
     lineup = get_object_or_404(Lineup, pk=pk)
     player = get_object_or_404(Player, pk=player_pk)
+    try:
+        score = Score.objects.get(lineup_to_score=lineup, player_to_score=player)
+        if score != '':
+            return redirect('lineup_detail', pk=lineup.pk)
+    except:
+        pass
     if request.method == "POST":
         form = ScoreForm(request.POST)
         if form.is_valid():
@@ -259,3 +270,26 @@ def edit_score(request, pk, player_pk):
     else:
         form = ScoreForm(instance=score)
     return render(request, 'fnfl/edit_score.html', {'form': form})
+
+
+# Count Views
+
+@login_required
+def player_usage(request):
+    lineups = Lineup.objects.filter(published_date__lte=timezone.now(), author=request.user).order_by('published_date')
+    p = []
+    for l in lineups:
+        players = Player.objects.filter(lineup=l)
+        for player in players:
+            p.append((player.position, player.name, player.team))
+
+    player_count_list = []
+    p_count = Counter(p)
+    for player in p_count:
+        player_count_list.append((p_count[player], ' '.join(player)))
+
+    player_count_list.sort(key=lambda tup: tup[0], reverse=True)
+
+    return render(request, 'fnfl/player_count.html', {'player_count_list': player_count_list})
+
+
