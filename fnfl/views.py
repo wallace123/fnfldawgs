@@ -239,3 +239,23 @@ def add_score(request, pk, player_pk):
         form = ScoreForm()
     return render(request, 'fnfl/add_score.html', {'form': form})
 
+
+@login_required
+def edit_score(request, pk, player_pk):
+    lineup = get_object_or_404(Lineup, pk=pk)
+    player = get_object_or_404(Player, pk=player_pk)
+    try:
+        score = Score.objects.get(lineup_to_score=lineup, player_to_score=player)
+    except:
+        return redirect('lineup_detail', pk=lineup.pk)
+    if request.method == "POST":
+        form = ScoreForm(request.POST, instance=score)
+        if form.is_valid():
+            score = form.save(commit=False)
+            score.lineup_to_score = lineup
+            score.player_to_score = player
+            score.save()
+            return redirect('lineup_detail', pk=lineup.pk)
+    else:
+        form = ScoreForm(instance=score)
+    return render(request, 'fnfl/edit_score.html', {'form': form})

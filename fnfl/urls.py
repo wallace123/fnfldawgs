@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^lineup/(?P<pk>\d+)/player/(?P<player_pk>\d+)/$', views.add_score, name="add_score"),
     url(r'^lineup/(?P<pk>\d+)/player/(?P<player_pk>\d+)/remove/$', views.remove_player, name="remove_player"),
     url(r'^lineup/(?P<pk>\d+)/player/(?P<player_pk>\d+)/edit/$', views.edit_player, name="edit_player"),
+    url(r'^lineup/(?P<pk>\d+)/player/(?P<player_pk>\d+)/score/edit/$', views.edit_score, name="edit_score"),
 ]
