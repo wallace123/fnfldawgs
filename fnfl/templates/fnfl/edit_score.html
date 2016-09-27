@@ -4,6 +4,7 @@
     <h1>Edit Score</h1>
     <form method="POST" class="post-form">{% csrf_token %}
         {{form.as_p}}
+        <br>
         <button type="submit" class="save btn btn-default">Send</button>
     </form>
 {% endblock %}
