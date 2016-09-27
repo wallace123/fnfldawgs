@@ -27,11 +27,11 @@ body {
 }
 
 .save {
-    float: right;
+    float: left;
 }
 
 .post-form textarea, .post-form input {
-    width: 1000;
+    width: 500;
 }
 
 .top-menu, .top-menu:hover, .top-menu:visited {
