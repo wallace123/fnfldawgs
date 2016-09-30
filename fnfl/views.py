@@ -189,10 +189,46 @@ def add_player(request, pk):
         messages.warning(request, "You already have 7 players added to this lineup!")
         return redirect('lineup_detail', pk=lineup.pk)
 
+    qb_count = 0
+    rb_count = 0
+    wr_count = 0
+    te_count = 0
+    k_count = 0
+    players = Player.objects.filter(lineup=lineup)
+
+    for p in players:
+        if p.position == "QB":
+            qb_count += 1
+        if p.position == "RB":
+            rb_count += 1
+        if p.position == "WR":
+            wr_count += 1
+        if p.position == "TE":
+            te_count += 1
+        if p.position == "K":
+            k_count += 1
+    
     if request.method == "POST":
         form = PlayerForm(request.POST)
         if form.is_valid():
             player = form.save(commit=False)
+
+            if player.position == "QB" and qb_count == 1:
+                messages.error(request, "You already have a QB in this lineup. Select another position!")
+                return render(request, 'fnfl/add_player.html', {'form': form})
+            if player.position == "RB" and rb_count == 2:
+                messages.error(request, "You already have two RBs in this lineup. Select another position!")
+                return render(request, 'fnfl/add_player.html', {'form': form})
+            if player.position == "WR" and wr_count == 2:
+                messages.error(request, "You already have two WRs in this lineup. Select another position!")
+                return render(request, 'fnfl/add_player.html', {'form': form})
+            if player.position == "TE" and te_count == 1:
+                messages.error(request, "You already have a TE in this lineup. Select another position!")
+                return render(request, 'fnfl/add_player.html', {'form': form})
+            if player.position == "K" and k_count == 1:
+                messages.error(request, "You already have a K in this lineup. Select another position!")
+                return render(request, 'fnfl/add_player.html', {'form': form})
+            
             player.lineup = lineup
             player.save()
             messages.success(request, "Player added!")
