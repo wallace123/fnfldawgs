@@ -4,6 +4,7 @@ from .models import Player, Lineup, Score
 from .forms import PlayerForm, LineupForm, ScoreForm
 from django.contrib.auth.decorators import login_required
 from collections import Counter
+from django.contrib import messages
 
 # Start Page
 def welcome(request):
@@ -188,6 +189,7 @@ def add_player(request, pk):
     lineup = get_object_or_404(Lineup, pk=pk)
     player_count = Player.objects.filter(lineup=lineup).count()
     if player_count == 7:
+        messages.warning(request, "You already have 7 players added to this lineup!")
         return redirect('lineup_detail', pk=lineup.pk)
 
     if request.method == "POST":
