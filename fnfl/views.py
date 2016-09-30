@@ -21,6 +21,7 @@ def lineup_new(request):
             lineup = form.save(commit=False)
             lineup.author = request.user
             lineup.save()
+            messages.success(request, "New Lineup created!")
             return redirect('lineup_detail', pk=lineup.pk)
     else:
         form = LineupForm()
@@ -31,6 +32,7 @@ def lineup_new(request):
 def lineup_publish(request, pk):
     lineup = get_object_or_404(Lineup, pk=pk)
     lineup.publish()
+    messages.success(request, "Lineup published!")
     return redirect('lineup_detail', pk=pk)
 
 
@@ -55,6 +57,7 @@ def lineup_edit(request, pk):
             lineup = form.save(commit=False)
             lineup.author = request.user
             lineup.save()
+            messages.success(request, "Lineup changed!")
             return redirect('lineup_detail', pk=lineup.pk)
     else:
         form = LineupForm(instance=lineup)
@@ -172,6 +175,7 @@ def lineup_detail(request, pk):
 def lineup_remove(request, pk):
     lineup = get_object_or_404(Lineup, pk=pk)
     lineup.delete()
+    messages.success(request, "Lineup deleted!")
     return redirect('lineup_list')
 
 
@@ -191,6 +195,7 @@ def add_player(request, pk):
             player = form.save(commit=False)
             player.lineup = lineup
             player.save()
+            messages.success(request, "Player added!")
             return redirect('lineup_detail', pk=lineup.pk)
     else:
         form = PlayerForm()
@@ -207,6 +212,7 @@ def edit_player(request, pk, player_pk):
             player = form.save(commit=False)
             player.lineup = lineup
             player.save()
+            messages.success(request, "Player modified!")
             return redirect('lineup_detail', pk=lineup.pk)
     else:
         form = PlayerForm(instance=player)
@@ -218,6 +224,7 @@ def remove_player(request, pk, player_pk):
     lineup = get_object_or_404(Lineup, pk=pk)
     player = get_object_or_404(Player, pk=player_pk)
     player.delete()
+    messages.success(request, "Player removed from lineup!")
     return redirect('lineup_list')
 
 
@@ -230,6 +237,7 @@ def add_score(request, pk, player_pk):
     try:
         score = Score.objects.get(lineup_to_score=lineup, player_to_score=player)
         if score != '':
+            messages.warning(request, "Score already added. Choose Edit Score!")
             return redirect('lineup_detail', pk=lineup.pk)
     except:
         pass
@@ -240,6 +248,7 @@ def add_score(request, pk, player_pk):
             score.lineup_to_score = lineup
             score.player_to_score = player
             score.save()
+            messages.success(request, "Added score to player!")
             return redirect('lineup_detail', pk=lineup.pk)
     else:
         form = ScoreForm()
@@ -253,6 +262,7 @@ def edit_score(request, pk, player_pk):
     try:
         score = Score.objects.get(lineup_to_score=lineup, player_to_score=player)
     except:
+        messages.warning(request, "No score available to edit. Choose Add Score!")
         return redirect('lineup_detail', pk=lineup.pk)
     if request.method == "POST":
         form = ScoreForm(request.POST, instance=score)
@@ -261,6 +271,7 @@ def edit_score(request, pk, player_pk):
             score.lineup_to_score = lineup
             score.player_to_score = player
             score.save()
+            messages.success(request, "Edited score of player!")
             return redirect('lineup_detail', pk=lineup.pk)
     else:
         form = ScoreForm(instance=score)
