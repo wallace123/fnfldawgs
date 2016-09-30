@@ -62,13 +62,6 @@ def lineup_edit(request, pk):
 
 
 @login_required
-def lineup_remove(request, pk):
-    lineup = get_object_or_404(Lineup, pk=pk)
-    lineup.delete()
-    return redirect('lineup_list')
-
-
-@login_required
 def lineup_detail(request, pk):
     lineup = get_object_or_404(Lineup, pk=pk)
     player = Player.objects.filter(lineup=lineup)
