@@ -15,17 +15,28 @@ def welcome(request):
 
 @login_required
 def lineup_new(request):
+    lineups = Lineup.objects.filter(author=request.user)
+    lineup_weeks = []
+
+    for l in lineups:
+        lineup_weeks.append(l.week)
+
     if request.method == "POST":
         form = LineupForm(request.POST)
         if form.is_valid():
             lineup = form.save(commit=False)
+
+            if lineup.week in lineup_weeks:
+                messages.error(request, "You already have a lineup for that week. Select another week!")
+                return render(request, 'fnfl/lineup_new.html', {'form': form})
+
             lineup.author = request.user
             lineup.save()
             messages.success(request, "New Lineup created!")
             return redirect('lineup_detail', pk=lineup.pk)
     else:
         form = LineupForm()
-    return render(request, 'fnfl/lineup_edit.html', {'form': form})
+    return render(request, 'fnfl/lineup_new.html', {'form': form})
 
 
 @login_required
