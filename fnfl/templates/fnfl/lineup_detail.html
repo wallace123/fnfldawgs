@@ -19,85 +19,120 @@
         <h1>{{ lineup.week }}</h1>
 
         {% if qb != '' %}
-            <select onchange="this.options[this.selectedIndex].value && (window.location=this.options[this.selectedIndex].value);">
-                <option value="">Player Action</option>
-                <option value="{% url 'edit_player' pk=lineup.pk player_pk=qb.pk %}">Edit QB</option>
-                <option value="{% url 'remove_player' pk=lineup.pk player_pk=qb.pk %}">Remove QB</option>
-                <option value="{% url 'add_score' pk=lineup.pk player_pk=qb.pk %}">Add Score</option>
-                <option value="{% url 'edit_score' pk=lineup.pk player_pk=qb.pk %}">Edit Score</option>
-            </select>
+            <div class="dropdown" style="display:inline">
+                <button class="btn btn-default dropdown-toggle" type="button"
+                    data-toggle="dropdown">Player Action
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=qb.pk %}">Edit QB</a></li>
+                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=qb.pk %}">Remove QB</a></li>
+                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=qb.pk %}">Add Score</a></li>
+                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=qb.pk %}">Edit Score</a></li>
+                </ul>
+            </div>
             <p style="display:inline">{{qb.position}} {{qb.name}} {{qb.team}}</p>
             <p style="padding-left: 125px">Score: {{qb_score}}</p>
         {% endif %}
 
         {% if rb1 != '' %} 
-            <select onchange="this.options[this.selectedIndex].value && (window.location=this.options[this.selectedIndex].value);">
-                <option value="">Player Action</option>      
-                <option value="{% url 'edit_player' pk=lineup.pk player_pk=rb1.pk %}">Edit RB</option>
-                <option value="{% url 'remove_player' pk=lineup.pk player_pk=rb1.pk %}">Remove RB</option>
-                <option value="{% url 'add_score' pk=lineup.pk player_pk=rb1.pk %}">Add Score</option>
-                <option value="{% url 'edit_score' pk=lineup.pk player_pk=rb1.pk %}">Edit Score</option>
-            </select>
+            <div class="dropdown" style="display:inline">
+                <button class="btn btn-default dropdown-toggle" type="button"
+                    data-toggle="dropdown">Player Action
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=rb1.pk %}">Edit RB</a></li>
+                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=rb1.pk %}">Remove RB</a></li>
+                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=rb1.pk %}">Add Score</a></li>
+                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=rb1.pk %}">Edit Score</a></li>
+                </ul>
+            </div>
             <p style="display:inline">{{rb1.position}} {{rb1.name}} {{rb1.team}}</p>
             <p style="padding-left: 125px">Score: {{rb1_score}}</p>
         {% endif %}
 
         {% if rb2 != '' %}
-            <select onchange="this.options[this.selectedIndex].value && (window.location=this.options[this.selectedIndex].value);">
-                <option value="">Player Action</option>
-                <option value="{% url 'edit_player' pk=lineup.pk player_pk=rb2.pk %}">Edit RB</option>
-                <option value="{% url 'remove_player' pk=lineup.pk player_pk=rb2.pk %}">Remove RB</option>
-                <option value="{% url 'add_score' pk=lineup.pk player_pk=rb2.pk %}">Add Score</option>
-                <option value="{% url 'edit_score' pk=lineup.pk player_pk=rb2.pk %}">Edit Score</option>
-            </select>  
+            <div class="dropdown" style="display:inline">
+                <button class="btn btn-default dropdown-toggle" type="button"
+                    data-toggle="dropdown">Player Action
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=rb2.pk %}">Edit RB</a></li>
+                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=rb2.pk %}">Remove RB</a></li>
+                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=rb2.pk %}">Add Score</a></li>
+                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=rb2.pk %}">Edit Score</a></li>
+                </ul>
+            </div>
             <p style="display:inline">{{rb2.position}} {{rb2.name}} {{rb2.team}}</p>
             <p style="padding-left: 125px">Score: {{rb2_score}}</p>
         {% endif %}
 
         {% if wr1 != '' %}
-            <select onchange="this.options[this.selectedIndex].value && (window.location=this.options[this.selectedIndex].value);">
-                <option value="">Player Action</option>
-                <option value="{% url 'edit_player' pk=lineup.pk player_pk=wr1.pk %}">Edit WR</option>
-                <option value="{% url 'remove_player' pk=lineup.pk player_pk=wr1.pk %}">Remove WR</option>
-                <option value="{% url 'add_score' pk=lineup.pk player_pk=wr1.pk %}">Add Score</option>
-                <option value="{% url 'edit_score' pk=lineup.pk player_pk=wr1.pk %}">Edit Score</option>
-            </select>
+            <div class="dropdown" style="display:inline">
+                <button class="btn btn-default dropdown-toggle" type="button"
+                    data-toggle="dropdown">Player Action
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=wr1.pk %}">Edit WR</a></li>
+                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=wr1.pk %}">Remove WR</a></li>
+                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=wr1.pk %}">Add Score</a></li>
+                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=wr1.pk %}">Edit Score</a></li>
+                </ul>
+            </div>
             <p style="display:inline">{{wr1.position}} {{wr1.name}} {{wr1.team}}</p>
             <p style="padding-left: 125px">Score: {{wr1_score}}</p>
         {% endif %}
 
         {% if wr2 != '' %}
-            <select onchange="this.options[this.selectedIndex].value && (window.location=this.options[this.selectedIndex].value);">
-                <option value="">Player Action</option>
-                <option value="{% url 'edit_player' pk=lineup.pk player_pk=wr2.pk %}">Edit WR</option>
-                <option value="{% url 'remove_player' pk=lineup.pk player_pk=wr2.pk %}">Remove WR</option>
-                <option value="{% url 'add_score' pk=lineup.pk player_pk=wr2.pk %}">Add Score</option>
-                <option value="{% url 'edit_score' pk=lineup.pk player_pk=wr2.pk %}">Edit Score</option>
-            </select>
+            <div class="dropdown" style="display:inline">
+                <button class="btn btn-default dropdown-toggle" type="button"
+                    data-toggle="dropdown">Player Action
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=wr2.pk %}">Edit WR</a></li>
+                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=wr2.pk %}">Remove WR</a></li>
+                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=wr2.pk %}">Add Score</a></li>
+                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=wr2.pk %}">Edit Score</a></li>
+                </ul>
+            </div>
             <p style="display:inline">{{wr2.position}} {{wr2.name}} {{wr2.team}}</p>
             <p style="padding-left: 125px">Score: {{wr2_score}}</p>
         {% endif %}
 
         {% if te != '' %}
-            <select onchange="this.options[this.selectedIndex].value && (window.location=this.options[this.selectedIndex].value);">
-                <option value="">Player Action</option>
-                <option value="{% url 'edit_player' pk=lineup.pk player_pk=te.pk %}">Edit TE</option>
-                <option value="{% url 'remove_player' pk=lineup.pk player_pk=te.pk %}">Remove TE</option>
-                <option value="{% url 'add_score' pk=lineup.pk player_pk=te.pk %}">Add Score</option>
-                <option value="{% url 'edit_score' pk=lineup.pk player_pk=te.pk %}">Edit Score</option>
-            </select>
+            <div class="dropdown" style="display:inline">
+                <button class="btn btn-default dropdown-toggle" type="button"
+                    data-toggle="dropdown">Player Action
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=te.pk %}">Edit TE</a></li>
+                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=te.pk %}">Remove TE</a></li>
+                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=te.pk %}">Add Score</a></li>
+                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=te.pk %}">Edit Score</a></li>
+                </ul>
+            </div>
             <p style="display:inline">{{te.position}} {{te.name}} {{te.team}}</p>
             <p style="padding-left: 125px">Score: {{te_score}}</p>
         {% endif %}
 
         {% if k != '' %}
-            <select onchange="this.options[this.selectedIndex].value && (window.location=this.options[this.selectedIndex].value);">
-                <option value="">Player Action</option>
-                <option value="{% url 'edit_player' pk=lineup.pk player_pk=k.pk %}">Edit K</option>
-                <option value="{% url 'remove_player' pk=lineup.pk player_pk=k.pk %}">Remove K</option>
-                <option value="{% url 'add_score' pk=lineup.pk player_pk=k.pk %}">Add Score</option>
-                <option value="{% url 'edit_score' pk=lineup.pk player_pk=k.pk %}">Edit Score</option>
-            </select>
+            <div class="dropdown" style="display:inline">
+                <button class="btn btn-default dropdown-toggle" type="button"
+                    data-toggle="dropdown">Player Action
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=k.pk %}">Edit K</a></li>
+                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=k.pk %}">Remove K</a></li>
+                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=k.pk %}">Add Score</a></li>
+                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=k.pk %}">Edit Score</a></li>
+                </ul>
+            </div>
             <p style="display:inline">{{k.position}} {{k.name}} {{k.team}}</p>
             <p style="padding-left: 125px">Score: {{k_score}}</p>
         {% endif %}
