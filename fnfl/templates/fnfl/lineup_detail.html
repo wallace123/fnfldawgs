@@ -1,142 +1,215 @@
 {% extends 'fnfl/base.html' %}
 
 {% block content %}
-    <div class="post">
-        {% if lineup.published_date %}
-            <div class="date">
-                {{ lineup.published_date }}
-            </div>
-        {% else %} 
-            <a class="btn btn-default" href="{% url 'lineup_publish' pk=lineup.pk %}">Publish</a>
-        {% endif %}
-        {% if user.is_authenticated %}
-            <a class="btn btn-default" href="{% url 'lineup_edit' pk=lineup.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
-            <a class="btn btn-default" href="{% url 'lineup_remove' pk=lineup.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
-            <a class="btn btn-default" href="{% url 'add_player' pk=lineup.pk %}">Add Player</a>
-        {% else %}
-            <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
-        {% endif %}
-        <h1>{{ lineup.week }}</h1>
+  <div class="container">
+    {% if lineup.published_date %}
+      <div class="date">
+        {{ lineup.published_date }}
+      </div>
+    {% else %} 
+      <a class="btn btn-default" href="{% url 'lineup_publish' pk=lineup.pk %}">Publish</a>
+    {% endif %}
+        
+    <a class="btn btn-default" href="{% url 'lineup_edit' pk=lineup.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a class="btn btn-default" href="{% url 'lineup_remove' pk=lineup.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+    <a class="btn btn-default" href="{% url 'add_player' pk=lineup.pk %}">Add Player</a>
+    <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
 
-        {% if qb != '' %}
-            <div class="dropdown" style="display:inline">
-                <button class="btn btn-default dropdown-toggle" type="button"
-                    data-toggle="dropdown">Player Action
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=qb.pk %}">Edit QB</a></li>
-                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=qb.pk %}">Remove QB</a></li>
-                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=qb.pk %}">Add Score</a></li>
-                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=qb.pk %}">Edit Score</a></li>
-                </ul>
-            </div>
-            <p style="display:inline">{{qb.position}} {{qb.name}} {{qb.team}}</p>
-            <p style="padding-left: 125px">Score: {{qb_score}}</p>
-        {% endif %}
+    <h1>{{ lineup.week }}</h1>
 
-        {% if rb1 != '' %} 
+    <div class="container-fluid">
+      {% if qb != '' %}
+        <div class="row text-left">
+          <div class="col-xs-2 col-md-2">
             <div class="dropdown" style="display:inline">
-                <button class="btn btn-default dropdown-toggle" type="button"
-                    data-toggle="dropdown">Player Action
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=rb1.pk %}">Edit RB</a></li>
-                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=rb1.pk %}">Remove RB</a></li>
-                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=rb1.pk %}">Add Score</a></li>
-                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=rb1.pk %}">Edit Score</a></li>
-                </ul>
-            </div>
-            <p style="display:inline">{{rb1.position}} {{rb1.name}} {{rb1.team}}</p>
-            <p style="padding-left: 125px">Score: {{rb1_score}}</p>
-        {% endif %}
+              
+              <button class="btn btn-default dropdown-toggle" type="button"
+                data-toggle="dropdown">Player Action
+                <span class="caret"></span>
+              </button>
 
-        {% if rb2 != '' %}
-            <div class="dropdown" style="display:inline">
-                <button class="btn btn-default dropdown-toggle" type="button"
-                    data-toggle="dropdown">Player Action
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=rb2.pk %}">Edit RB</a></li>
-                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=rb2.pk %}">Remove RB</a></li>
-                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=rb2.pk %}">Add Score</a></li>
-                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=rb2.pk %}">Edit Score</a></li>
-                </ul>
-            </div>
-            <p style="display:inline">{{rb2.position}} {{rb2.name}} {{rb2.team}}</p>
-            <p style="padding-left: 125px">Score: {{rb2_score}}</p>
-        {% endif %}
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=qb.pk %}">Edit QB</a></li>
+                <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=qb.pk %}">Remove QB</a></li>
+                <li><a href="{% url 'add_score' pk=lineup.pk player_pk=qb.pk %}">Add Score</a></li>
+                <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=qb.pk %}">Edit Score</a></li>
+              </ul>
 
-        {% if wr1 != '' %}
-            <div class="dropdown" style="display:inline">
-                <button class="btn btn-default dropdown-toggle" type="button"
-                    data-toggle="dropdown">Player Action
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=wr1.pk %}">Edit WR</a></li>
-                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=wr1.pk %}">Remove WR</a></li>
-                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=wr1.pk %}">Add Score</a></li>
-                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=wr1.pk %}">Edit Score</a></li>
-                </ul>
             </div>
-            <p style="display:inline">{{wr1.position}} {{wr1.name}} {{wr1.team}}</p>
-            <p style="padding-left: 125px">Score: {{wr1_score}}</p>
-        {% endif %}
+          </div>
 
-        {% if wr2 != '' %}
-            <div class="dropdown" style="display:inline">
-                <button class="btn btn-default dropdown-toggle" type="button"
-                    data-toggle="dropdown">Player Action
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=wr2.pk %}">Edit WR</a></li>
-                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=wr2.pk %}">Remove WR</a></li>
-                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=wr2.pk %}">Add Score</a></li>
-                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=wr2.pk %}">Edit Score</a></li>
-                </ul>
-            </div>
-            <p style="display:inline">{{wr2.position}} {{wr2.name}} {{wr2.team}}</p>
-            <p style="padding-left: 125px">Score: {{wr2_score}}</p>
-        {% endif %}
+          <div class="col-xs-10 col-md-10 text-left">
+            <p>{{qb.position}} {{qb.name}} {{qb.team}}</p>
+            <p>QB Score: {{qb_score}}<p>
+          </div>
+        </div>
+      {% endif %}
 
-        {% if te != '' %}
+      {% if rb1 != '' %}
+        <div class="row text-left">
+          <div class="col-xs-2 col-md-2">
             <div class="dropdown" style="display:inline">
-                <button class="btn btn-default dropdown-toggle" type="button"
-                    data-toggle="dropdown">Player Action
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=te.pk %}">Edit TE</a></li>
-                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=te.pk %}">Remove TE</a></li>
-                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=te.pk %}">Add Score</a></li>
-                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=te.pk %}">Edit Score</a></li>
-                </ul>
-            </div>
-            <p style="display:inline">{{te.position}} {{te.name}} {{te.team}}</p>
-            <p style="padding-left: 125px">Score: {{te_score}}</p>
-        {% endif %}
+              
+              <button class="btn btn-default dropdown-toggle" type="button"
+                data-toggle="dropdown">Player Action
+                <span class="caret"></span>
+              </button>
 
-        {% if k != '' %}
-            <div class="dropdown" style="display:inline">
-                <button class="btn btn-default dropdown-toggle" type="button"
-                    data-toggle="dropdown">Player Action
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=k.pk %}">Edit K</a></li>
-                    <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=k.pk %}">Remove K</a></li>
-                    <li><a href="{% url 'add_score' pk=lineup.pk player_pk=k.pk %}">Add Score</a></li>
-                    <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=k.pk %}">Edit Score</a></li>
-                </ul>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=rb1.pk %}">Edit RB</a></li>
+                <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=rb1.pk %}">Remove RB</a></li>
+                <li><a href="{% url 'add_score' pk=lineup.pk player_pk=rb1.pk %}">Add Score</a></li>
+                <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=rb1.pk %}">Edit Score</a></li>
+              </ul>
+
             </div>
-            <p style="display:inline">{{k.position}} {{k.name}} {{k.team}}</p>
-            <p style="padding-left: 125px">Score: {{k_score}}</p>
-        {% endif %}
-            <br>
-            <p style="font-size: 16pt">Total Score: {{total_week_score}}</p>
+          </div>
+
+          <div class="col-xs-10 col-md-10 text-left">
+            <p>{{rb1.position}} {{rb1.name}} {{rb1.team}}</p>
+            <p>RB Score: {{rb1_score}}<p>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if rb2 != '' %}
+        <div class="row text-left">
+          <div class="col-xs-2 col-md-2">
+            <div class="dropdown" style="display:inline">
+              
+              <button class="btn btn-default dropdown-toggle" type="button"
+                data-toggle="dropdown">Player Action
+                <span class="caret"></span>
+              </button>
+
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=rb2.pk %}">Edit RB</a></li>
+                <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=rb2.pk %}">Remove RB</a></li>
+                <li><a href="{% url 'add_score' pk=lineup.pk player_pk=rb2.pk %}">Add Score</a></li>
+                <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=rb2.pk %}">Edit Score</a></li>
+              </ul>
+
+            </div>
+          </div>
+
+          <div class="col-xs-10 col-md-10 text-left">
+            <p>{{rb2.position}} {{rb2.name}} {{rb2.team}}</p>
+            <p>RB Score: {{rb2_score}}<p>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if wr1 != '' %}
+        <div class="row text-left">
+          <div class="col-xs-2 col-md-2">
+            <div class="dropdown" style="display:inline">
+              
+              <button class="btn btn-default dropdown-toggle" type="button"
+                data-toggle="dropdown">Player Action
+                <span class="caret"></span>
+              </button>
+
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=wr1.pk %}">Edit WR</a></li>
+                <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=wr1.pk %}">Remove WR</a></li>
+                <li><a href="{% url 'add_score' pk=lineup.pk player_pk=wr1.pk %}">Add Score</a></li>
+                <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=wr1.pk %}">Edit Score</a></li>
+              </ul>
+
+            </div>
+          </div>
+
+          <div class="col-xs-10 col-md-10 text-left">
+            <p>{{wr1.position}} {{wr1.name}} {{wr1.team}}</p>
+            <p>WR Score: {{wr1_score}}<p>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if wr2 != '' %}
+        <div class="row text-left">
+          <div class="col-xs-2 col-md-2">
+            <div class="dropdown" style="display:inline">
+              
+              <button class="btn btn-default dropdown-toggle" type="button"
+                data-toggle="dropdown">Player Action
+                <span class="caret"></span>
+              </button>
+
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=wr2.pk %}">Edit WR</a></li>
+                <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=wr2.pk %}">Remove WR</a></li>
+                <li><a href="{% url 'add_score' pk=lineup.pk player_pk=wr2.pk %}">Add Score</a></li>
+                <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=wr2.pk %}">Edit Score</a></li>
+              </ul>
+
+            </div>
+          </div>
+
+          <div class="col-xs-10 col-md-10 text-left">
+            <p>{{wr2.position}} {{wr2.name}} {{wr2.team}}</p>
+            <p>WR Score: {{wr2_score}}<p>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if te != '' %}
+        <div class="row text-left">
+          <div class="col-xs-2 col-md-2">
+            <div class="dropdown" style="display:inline">
+              
+              <button class="btn btn-default dropdown-toggle" type="button"
+                data-toggle="dropdown">Player Action
+                <span class="caret"></span>
+              </button>
+
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=te.pk %}">Edit TE</a></li>
+                <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=te.pk %}">Remove TE</a></li>
+                <li><a href="{% url 'add_score' pk=lineup.pk player_pk=te.pk %}">Add Score</a></li>
+                <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=te.pk %}">Edit Score</a></li>
+              </ul>
+
+            </div>
+          </div>
+
+          <div class="col-xs-10 col-md-10 text-left">
+            <p>{{te.position}} {{te.name}} {{te.team}}</p>
+            <p>TE Score: {{te_score}}<p>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if k != '' %}
+        <div class="row text-left">
+          <div class="col-xs-2 col-md-2">
+            <div class="dropdown" style="display:inline">
+              
+              <button class="btn btn-default dropdown-toggle" type="button"
+                data-toggle="dropdown">Player Action
+                <span class="caret"></span>
+              </button>
+
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'edit_player' pk=lineup.pk player_pk=k.pk %}">Edit K</a></li>
+                <li><a href="{% url 'remove_player' pk=lineup.pk player_pk=k.pk %}">Remove K</a></li>
+                <li><a href="{% url 'add_score' pk=lineup.pk player_pk=k.pk %}">Add Score</a></li>
+                <li><a href="{% url 'edit_score' pk=lineup.pk player_pk=k.pk %}">Edit Score</a></li>
+              </ul>
+
+            </div>
+          </div>
+
+          <div class="col-xs-10 col-md-10 text-left">
+            <p>{{k.position}} {{k.name}} {{k.team}}</p>
+            <p>K Score: {{k_score}}<p>
+          </div>
+        </div>
+      {% endif %}
+
     </div>
+
+    <br>
+    <p style="font-size: 16pt">Total Score: {{total_week_score}}</p>
+  </div>
 {% endblock %}
