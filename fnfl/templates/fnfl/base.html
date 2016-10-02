@@ -26,7 +26,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-xs-4 col-md-6 text-left">
+        <div class="col-xs-6 col-md-6 text-left">
           <h1>
             <a href="{% url 'welcome' %}">FNFL Dawgs</a>
           </h1>
@@ -36,16 +36,25 @@
           <div class="row">
             <div class="col-xs-12 col-md-12 text-right">
               <p class="top-menu-logout">
-                {{ user.username }} (<a style="color:white" href="{% url 'logout' %}">Log out</a>)
+                {{ user.username }} (<a style="color:white" href="{% url 'logout' %}">log out</a>)
               </p>
             </div>
           </div>
           <div class="row">
-            <div class="col-xs-8 col-md-6 pull-right">
-              <a href="{% url 'lineup_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
-              <a href="{% url 'lineup_draft_list' %}" class="top-menu"><span class="glyphicon glyphicon-edit"></span></a>
-              <a href="{% url 'lineup_list' %}" class="top-menu"><span class="glyphicon glyphicon-list"></span></a>
-              <a href="{% url 'player_usage' %}" class="top-menu"><span class="glyphicon glyphicon-asterisk"></span></a>
+            <div class="col-xs-6 col-md-6 pull-right">
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button"
+                data-toggle="dropdown">Menu
+                <span class="caret"></span>
+              </button>
+
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'lineup_new' %}">New Lineup</a></li>
+                <li><a href="{% url 'lineup_draft_list' %}">Draft Lineups</a></li>
+                <li><a href="{% url 'lineup_list' %}">Published Lineups</a></li>
+                <li><a href="{% url 'player_usage' %}">Player Usage</a></li>
+              </ul>
+              </div>
             </div>
           </div>
 {% else %}
