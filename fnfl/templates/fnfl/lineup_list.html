@@ -1,12 +1,16 @@
 {% extends 'fnfl/base.html' %}
 
 {% block content %}
-    {% for lineup in lineups %}
-        <div class="lineup">
-            <h1><a href="{% url 'lineup_detail' pk=lineup.pk %}">{{ lineup.week }}</a></h1>
-            <div class="date">
-                <p>published: {{ lineup.published_date }}</p>
-            </div>
-        </div>
-    {% endfor %}
+    
+{% for lineup in lineups %}
+  <div>
+    <h1>
+      <a href="{% url 'lineup_detail' pk=lineup.pk %}">{{ lineup.week }}</a>
+    </h1>
+    <div class="date">
+      <p>published: {{ lineup.published_date }}</p>
+    </div>
+  </div>
+{% endfor %}
+
 {% endblock %}

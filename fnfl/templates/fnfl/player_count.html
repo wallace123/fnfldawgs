@@ -1,16 +1,18 @@
 {% extends 'fnfl/base.html' %}
 
 {% block content %}
-    <h1>Player Usage</h1>
-    {% for count, player in player_count_list %}
-        {% if count >= 4 %}
-            <p style="color:red">{{player}} - {{count}}</p>
-        {% endif %}
-        {% if count == 3 %}
-            <p style="color:orange">{{player}} - {{count}}</p>
-        {% endif %}
-        {% if count <= 2 %}
-            <p>{{player}} - {{count}}</p>
-        {% endif %}
-    {% endfor %}
+
+  <h1>Player Usage</h1>
+{% for count, player in player_count_list %}
+  {% if count >= 4 %}
+    <p style="color:red">{{player}} - {{count}}</p>
+  {% endif %}
+  {% if count == 3 %}
+    <p style="color:orange">{{player}} - {{count}}</p>
+  {% endif %}
+  {% if count <= 2 %}
+    <p>{{player}} - {{count}}</p>
+  {% endif %}
+{% endfor %}
+
 {% endblock %}

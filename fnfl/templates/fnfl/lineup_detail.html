@@ -1,14 +1,14 @@
 {% extends 'fnfl/base.html' %}
 
 {% block content %}
-  <div class="container">
-    {% if lineup.published_date %}
+  <div class="container-fluid">
+{% if lineup.published_date %}
       <div class="date">
         {{ lineup.published_date }}
       </div>
-    {% else %} 
+{% else %} 
       <a class="btn btn-default" href="{% url 'lineup_publish' pk=lineup.pk %}">Publish</a>
-    {% endif %}
+{% endif %}
         
     <a class="btn btn-default" href="{% url 'lineup_edit' pk=lineup.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
     <a class="btn btn-default" href="{% url 'lineup_remove' pk=lineup.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
@@ -18,7 +18,7 @@
     <h1>{{ lineup.week }}</h1>
 
     <div class="container">
-      {% if qb != '' %}
+{% if qb != '' %}
         <div class="row text-left">
           <div class="col-xs-5 col-md-2">
             <div class="dropdown" style="display:inline">
@@ -43,9 +43,9 @@
             <p>QB Score: {{qb_score}}<p>
           </div>
         </div>
-      {% endif %}
+{% endif %}
 
-      {% if rb1 != '' %}
+{% if rb1 != '' %}
         <div class="row text-left">
           <div class="col-xs-5 col-md-2">
             <div class="dropdown" style="display:inline">
@@ -70,9 +70,9 @@
             <p>RB Score: {{rb1_score}}<p>
           </div>
         </div>
-      {% endif %}
+{% endif %}
 
-      {% if rb2 != '' %}
+{% if rb2 != '' %}
         <div class="row text-left">
           <div class="col-xs-5 col-md-2">
             <div class="dropdown" style="display:inline">
@@ -97,9 +97,9 @@
             <p>RB Score: {{rb2_score}}<p>
           </div>
         </div>
-      {% endif %}
+{% endif %}
 
-      {% if wr1 != '' %}
+{% if wr1 != '' %}
         <div class="row text-left">
           <div class="col-xs-5 col-md-2">
             <div class="dropdown" style="display:inline">
@@ -124,9 +124,9 @@
             <p>WR Score: {{wr1_score}}<p>
           </div>
         </div>
-      {% endif %}
+{% endif %}
 
-      {% if wr2 != '' %}
+{% if wr2 != '' %}
         <div class="row text-left">
           <div class="col-xs-5 col-md-2">
             <div class="dropdown" style="display:inline">
@@ -151,9 +151,9 @@
             <p>WR Score: {{wr2_score}}<p>
           </div>
         </div>
-      {% endif %}
+{% endif %}
 
-      {% if te != '' %}
+{% if te != '' %}
         <div class="row text-left">
           <div class="col-xs-5 col-md-2">
             <div class="dropdown" style="display:inline">
@@ -178,9 +178,9 @@
             <p>TE Score: {{te_score}}<p>
           </div>
         </div>
-      {% endif %}
+{% endif %}
 
-      {% if k != '' %}
+{% if k != '' %}
         <div class="row text-left">
           <div class="col-xs-5 col-md-2">
             <div class="dropdown" style="display:inline">
@@ -205,7 +205,7 @@
             <p>K Score: {{k_score}}<p>
           </div>
         </div>
-      {% endif %}
+{% endif %}
 
     </div>
 
