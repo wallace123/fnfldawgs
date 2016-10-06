@@ -60,6 +60,9 @@ body {
     width: 150px;
     height: 60px;
     margin: 10px;
+    position: relative;
+    flex-direction: column;
+}
 
 .flex-item-text {
     width: 800px;
