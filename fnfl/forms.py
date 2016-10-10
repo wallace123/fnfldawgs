@@ -1,8 +1,12 @@
+"""Forms for adding Player, Lineup, and Score"""
+
 from django import forms
 
 from .models import Player, Lineup, Score
 
 class PlayerForm(forms.ModelForm):
+    """Add Player form"""
+
     class Meta:
         model = Player
         fields = (
@@ -12,13 +16,17 @@ class PlayerForm(forms.ModelForm):
         )
 
 class LineupForm(forms.ModelForm):
+    """Add Lineup form"""
+
     class Meta:
         model = Lineup
         fields = (
-            'week', 
+            'week',
         )
 
 class ScoreForm(forms.ModelForm):
+    """Add Score form"""
+
     class Meta:
         model = Score
         fields = (

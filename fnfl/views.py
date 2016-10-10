@@ -1,13 +1,18 @@
+"""Views for fnfldawgs site"""
+
+from collections import Counter
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Player, Lineup, Score
 from .forms import PlayerForm, LineupForm, ScoreForm
-from django.contrib.auth.decorators import login_required
-from collections import Counter
-from django.contrib import messages
+
 
 # Start Page
 def welcome(request):
+    """Display welcome page"""
+
     return render(request, 'fnfl/welcome.html', {})
 
 
@@ -15,11 +20,14 @@ def welcome(request):
 
 @login_required
 def lineup_new(request):
+    """Display form to create new lineup"""
+
     lineups = Lineup.objects.filter(author=request.user)
     lineup_weeks = []
 
-    for l in lineups:
-        lineup_weeks.append(l.week)
+    # Get already created lineups so user can't create duplicates
+    for lineup in lineups:
+        lineup_weeks.append(lineup.week)
 
     if request.method == "POST":
         form = LineupForm(request.POST)
@@ -27,41 +35,52 @@ def lineup_new(request):
             lineup = form.save(commit=False)
 
             if lineup.week in lineup_weeks:
-                messages.error(request, "You already have a lineup for that week. Select another week!")
+                messages.error(request, "You already have a lineup for that week. \
+                               Select another week!")
                 return render(request, 'fnfl/lineup_new.html', {'form': form})
 
             lineup.author = request.user
             lineup.save()
             messages.success(request, "New Lineup created!")
-            return redirect('lineup_detail', pk=lineup.pk)
+            return redirect('lineup_detail', lineup_pk=lineup.pk)
     else:
         form = LineupForm()
     return render(request, 'fnfl/lineup_new.html', {'form': form})
 
 
 @login_required
-def lineup_publish(request, pk):
-    lineup = get_object_or_404(Lineup, pk=pk)
+def lineup_publish(request, lineup_pk):
+    """Publish lineup"""
+
+    lineup = get_object_or_404(Lineup, pk=lineup_pk)
     lineup.publish()
     messages.success(request, "Lineup published!")
-    return redirect('lineup_detail', pk=pk)
+    return redirect('lineup_detail', lineup_pk=lineup.pk)
 
 
 @login_required
 def lineup_draft_list(request):
-    lineups = Lineup.objects.filter(published_date__isnull=True, author=request.user).order_by('created_date')
+    """Display draft lineups"""
+
+    lineups = Lineup.objects.filter(published_date__isnull=True,
+                                    author=request.user).order_by('created_date')
     return render(request, 'fnfl/lineup_draft_list.html', {'lineups': lineups})
 
 
 @login_required
 def lineup_list(request):
-    lineups = Lineup.objects.filter(published_date__lte=timezone.now(), author=request.user).order_by('published_date')
+    """Display lineups"""
+
+    lineups = Lineup.objects.filter(published_date__lte=timezone.now(),
+                                    author=request.user).order_by('published_date')
     return render(request, 'fnfl/lineup_list.html', {'lineups': lineups})
 
 
 @login_required
-def lineup_edit(request, pk):
-    lineup = get_object_or_404(Lineup, pk=pk)
+def lineup_edit(request, lineup_pk):
+    """Edit lineup"""
+
+    lineup = get_object_or_404(Lineup, pk=lineup_pk)
     if request.method == "POST":
         form = LineupForm(request.POST, instance=lineup)
         if form.is_valid():
@@ -69,17 +88,19 @@ def lineup_edit(request, pk):
             lineup.author = request.user
             lineup.save()
             messages.success(request, "Lineup changed!")
-            return redirect('lineup_detail', pk=lineup.pk)
+            return redirect('lineup_detail', lineup_pk=lineup.pk)
     else:
         form = LineupForm(instance=lineup)
     return render(request, 'fnfl/lineup_edit.html', {'form': form})
 
 
 @login_required
-def lineup_detail(request, pk):
-    lineup = get_object_or_404(Lineup, pk=pk)
-    player = Player.objects.filter(lineup=lineup)
-    score = Score.objects.filter(lineup_to_score=lineup)
+def lineup_detail(request, lineup_pk):
+    """Display lineup positions and score for each player and the week total"""
+
+    lineup = get_object_or_404(Lineup, pk=lineup_pk)
+    players = Player.objects.filter(lineup=lineup)
+    scores = Score.objects.filter(lineup_to_score=lineup)
 
     qb_player = ""
     rb1_player = ""
@@ -97,94 +118,102 @@ def lineup_detail(request, pk):
     te_score = 0
     k_score = 0
 
-    for p in player:
-        if p.position == 'QB':
-            qb_player = p
+    for player in players:
+        if player.position == 'QB':
+            qb_player = player
             try:
-                s = Score.objects.get(lineup_to_score=lineup,
-                    player_to_score=p)
-                qb_score = s.week_score
-            except:
+                score = Score.objects.get(lineup_to_score=lineup,
+                                          player_to_score=player)
+                qb_score = score.week_score
+            except Score.DoesNotExist:
                 pass
-        if p.position == 'RB' and rb1_player == '':
-            rb1_player = p
+
+        if player.position == 'RB' and rb1_player == '':
+            rb1_player = player
             try:
-                s = Score.objects.get(lineup_to_score=lineup,
-                    player_to_score=p)
-                rb1_score = s.week_score
-            except:
+                score = Score.objects.get(lineup_to_score=lineup,
+                                          player_to_score=player)
+                rb1_score = score.week_score
+            except Score.DoesNotExist:
                 pass
-            continue
-        if p.position == 'RB' and rb1_player != '':
-            rb2_player = p
+            continue # Continue here so RB is not displayed twice
+
+        if player.position == 'RB' and rb1_player != '':
+            rb2_player = player
             try:
-                s = Score.objects.get(lineup_to_score=lineup,
-                    player_to_score=p)
-                rb2_score = s.week_score
-            except:
+                score = Score.objects.get(lineup_to_score=lineup,
+                                          player_to_score=player)
+                rb2_score = score.week_score
+            except Score.DoesNotExist:
                 pass
-        if p.position == 'WR' and wr1_player == '':
-            wr1_player = p
+
+        if player.position == 'WR' and wr1_player == '':
+            wr1_player = player
             try:
-                s = Score.objects.get(lineup_to_score=lineup,
-                    player_to_score=p)
-                wr1_score = s.week_score
-            except:
+                score = Score.objects.get(lineup_to_score=lineup,
+                                          player_to_score=player)
+                wr1_score = score.week_score
+            except Score.DoesNotExist:
                 pass
-            continue
-        if p.position == 'WR' and wr1_player != '':
-            wr2_player = p
+            continue # Continue here so WR is not displayed twice
+
+        if player.position == 'WR' and wr1_player != '':
+            wr2_player = player
             try:
-                s = Score.objects.get(lineup_to_score=lineup,
-                    player_to_score=p)
-                wr2_score = s.week_score
-            except:
+                score = Score.objects.get(lineup_to_score=lineup,
+                                          player_to_score=player)
+                wr2_score = score.week_score
+            except Score.DoesNotExist:
                 pass
-        if p.position == 'TE':
-            te_player = p
+
+        if player.position == 'TE':
+            te_player = player
             try:
-                s = Score.objects.get(lineup_to_score=lineup,
-                    player_to_score=p)
-                te_score = s.week_score
-            except:
+                score = Score.objects.get(lineup_to_score=lineup,
+                                          player_to_score=player)
+                te_score = score.week_score
+            except Score.DoesNotExist:
                 pass
-        if p.position == 'K':
-            k_player = p
+
+        if player.position == 'K':
+            k_player = player
             try:
-                s = Score.objects.get(lineup_to_score=lineup,
-                    player_to_score=p)
-                k_score = s.week_score
-            except:
+                score = Score.objects.get(lineup_to_score=lineup,
+                                          player_to_score=player)
+                k_score = score.week_score
+            except Score.DoesNotExist:
                 pass
 
     total_week_score = 0
 
-    for s in score:
-        total_week_score += s.week_score
+    for score in scores:
+        total_week_score += score.week_score
 
-    return render(request, 'fnfl/lineup_detail.html', 
-        {'lineup': lineup,
-         'total_week_score': total_week_score,
-         'qb': qb_player,
-         'rb1': rb1_player,
-         'rb2': rb2_player,
-         'wr1': wr1_player,
-         'wr2': wr2_player,
-         'te': te_player,
-         'k': k_player,
-         'qb_score': qb_score,
-         'rb1_score': rb1_score,
-         'rb2_score': rb2_score,
-         'wr1_score': wr1_score,
-         'wr2_score': wr2_score,
-         'te_score': te_score,
-         'k_score': k_score,}
-    )
+    return render(request, 'fnfl/lineup_detail.html',
+                  {'lineup': lineup,
+                   'total_week_score': total_week_score,
+                   'qb': qb_player,
+                   'rb1': rb1_player,
+                   'rb2': rb2_player,
+                   'wr1': wr1_player,
+                   'wr2': wr2_player,
+                   'te': te_player,
+                   'k': k_player,
+                   'qb_score': qb_score,
+                   'rb1_score': rb1_score,
+                   'rb2_score': rb2_score,
+                   'wr1_score': wr1_score,
+                   'wr2_score': wr2_score,
+                   'te_score': te_score,
+                   'k_score': k_score,}
+                 )
 
 
 @login_required
-def lineup_remove(request, pk):
-    lineup = get_object_or_404(Lineup, pk=pk)
+def lineup_remove(request, lineup_pk):
+    """Remove lineup"""
+
+    lineup = get_object_or_404(Lineup, pk=lineup_pk)
     lineup.delete()
     messages.success(request, "Lineup deleted!")
     return redirect('lineup_list')
@@ -193,12 +222,14 @@ def lineup_remove(request, pk):
 # Player Views
 
 @login_required
-def add_player(request, pk):
-    lineup = get_object_or_404(Lineup, pk=pk)
+def add_player(request, lineup_pk):
+    """Add new player"""
+
+    lineup = get_object_or_404(Lineup, pk=lineup_pk)
     player_count = Player.objects.filter(lineup=lineup).count()
     if player_count == 7:
         messages.warning(request, "You already have 7 players added to this lineup!")
-        return redirect('lineup_detail', pk=lineup.pk)
+        return redirect('lineup_detail', lineup_pk=lineup.pk)
 
     qb_count = 0
     rb_count = 0
@@ -207,51 +238,58 @@ def add_player(request, pk):
     k_count = 0
     players = Player.objects.filter(lineup=lineup)
 
-    for p in players:
-        if p.position == "QB":
+    for player in players:
+        if player.position == "QB":
             qb_count += 1
-        if p.position == "RB":
+        if player.position == "RB":
             rb_count += 1
-        if p.position == "WR":
+        if player.position == "WR":
             wr_count += 1
-        if p.position == "TE":
+        if player.position == "TE":
             te_count += 1
-        if p.position == "K":
+        if player.position == "K":
             k_count += 1
-    
+
     if request.method == "POST":
         form = PlayerForm(request.POST)
         if form.is_valid():
             player = form.save(commit=False)
 
             if player.position == "QB" and qb_count == 1:
-                messages.error(request, "You already have a QB in this lineup. Select another position!")
+                messages.error(request, "You already have a QB in this lineup. \
+                                         Select another position!")
                 return render(request, 'fnfl/add_player.html', {'form': form})
             if player.position == "RB" and rb_count == 2:
-                messages.error(request, "You already have two RBs in this lineup. Select another position!")
+                messages.error(request, "You already have two RBs in this lineup. \
+                                         Select another position!")
                 return render(request, 'fnfl/add_player.html', {'form': form})
             if player.position == "WR" and wr_count == 2:
-                messages.error(request, "You already have two WRs in this lineup. Select another position!")
+                messages.error(request, "You already have two WRs in this lineup. \
+                                         Select another position!")
                 return render(request, 'fnfl/add_player.html', {'form': form})
             if player.position == "TE" and te_count == 1:
-                messages.error(request, "You already have a TE in this lineup. Select another position!")
+                messages.error(request, "You already have a TE in this lineup. \
+                                         Select another position!")
                 return render(request, 'fnfl/add_player.html', {'form': form})
             if player.position == "K" and k_count == 1:
-                messages.error(request, "You already have a K in this lineup. Select another position!")
+                messages.error(request, "You already have a K in this lineup. \
+                                         Select another position!")
                 return render(request, 'fnfl/add_player.html', {'form': form})
-            
+
             player.lineup = lineup
             player.save()
             messages.success(request, "Player added!")
-            return redirect('lineup_detail', pk=lineup.pk)
+            return redirect('lineup_detail', lineup_pk=lineup.pk)
     else:
         form = PlayerForm()
     return render(request, 'fnfl/add_player.html', {'form': form})
 
 
 @login_required
-def edit_player(request, pk, player_pk):
-    lineup = get_object_or_404(Lineup, pk=pk)
+def edit_player(request, lineup_pk, player_pk):
+    """Edit created player"""
+
+    lineup = get_object_or_404(Lineup, pk=lineup_pk)
     player = get_object_or_404(Player, pk=player_pk)
     if request.method == 'POST':
         form = PlayerForm(request.POST, instance=player)
@@ -260,15 +298,16 @@ def edit_player(request, pk, player_pk):
             player.lineup = lineup
             player.save()
             messages.success(request, "Player modified!")
-            return redirect('lineup_detail', pk=lineup.pk)
+            return redirect('lineup_detail', lineup_pk=lineup.pk)
     else:
         form = PlayerForm(instance=player)
     return render(request, 'fnfl/edit_player.html', {'form': form})
 
 
 @login_required
-def remove_player(request, pk, player_pk):
-    lineup = get_object_or_404(Lineup, pk=pk)
+def remove_player(request, player_pk):
+    """Remove created player"""
+
     player = get_object_or_404(Player, pk=player_pk)
     player.delete()
     messages.success(request, "Player removed from lineup!")
@@ -278,16 +317,20 @@ def remove_player(request, pk, player_pk):
 # Score Views
 
 @login_required
-def add_score(request, pk, player_pk):
-    lineup = get_object_or_404(Lineup, pk=pk)
+def add_score(request, lineup_pk, player_pk):
+    """Add stats to player to calculate score"""
+
+    lineup = get_object_or_404(Lineup, pk=lineup_pk)
     player = get_object_or_404(Player, pk=player_pk)
+
     try:
         score = Score.objects.get(lineup_to_score=lineup, player_to_score=player)
         if score != '':
             messages.warning(request, "Score already added. Choose Edit Score!")
-            return redirect('lineup_detail', pk=lineup.pk)
-    except:
+            return redirect('lineup_detail', lineup_pk=lineup.pk)
+    except Score.DoesNotExist:
         pass
+
     if request.method == "POST":
         form = ScoreForm(request.POST)
         if form.is_valid():
@@ -296,21 +339,25 @@ def add_score(request, pk, player_pk):
             score.player_to_score = player
             score.save()
             messages.success(request, "Added score to player!")
-            return redirect('lineup_detail', pk=lineup.pk)
+            return redirect('lineup_detail', lineup_pk=lineup.pk)
     else:
         form = ScoreForm()
     return render(request, 'fnfl/add_score.html', {'form': form})
 
 
 @login_required
-def edit_score(request, pk, player_pk):
-    lineup = get_object_or_404(Lineup, pk=pk)
+def edit_score(request, lineup_pk, player_pk):
+    """Edit stats of player to recalculate score"""
+
+    lineup = get_object_or_404(Lineup, pk=lineup_pk)
     player = get_object_or_404(Player, pk=player_pk)
+
     try:
         score = Score.objects.get(lineup_to_score=lineup, player_to_score=player)
-    except:
+    except Score.DoesNotExist:
         messages.warning(request, "No score available to edit. Choose Add Score!")
-        return redirect('lineup_detail', pk=lineup.pk)
+        return redirect('lineup_detail', lineup_pk=lineup.pk)
+
     if request.method == "POST":
         form = ScoreForm(request.POST, instance=score)
         if form.is_valid():
@@ -319,7 +366,7 @@ def edit_score(request, pk, player_pk):
             score.player_to_score = player
             score.save()
             messages.success(request, "Edited score of player!")
-            return redirect('lineup_detail', pk=lineup.pk)
+            return redirect('lineup_detail', lineup_pk=lineup.pk)
     else:
         form = ScoreForm(instance=score)
     return render(request, 'fnfl/edit_score.html', {'form': form})
@@ -329,20 +376,21 @@ def edit_score(request, pk, player_pk):
 
 @login_required
 def player_usage(request):
-    lineups = Lineup.objects.filter(published_date__lte=timezone.now(), author=request.user).order_by('published_date')
-    p = []
-    for l in lineups:
-        players = Player.objects.filter(lineup=l)
+    """Show how many times a player has been used"""
+
+    lineups = Lineup.objects.filter(published_date__lte=timezone.now(),
+                                    author=request.user).order_by('published_date')
+    p_list = []
+    for lineup in lineups:
+        players = Player.objects.filter(lineup=lineup)
         for player in players:
-            p.append((player.position, player.name, player.team))
+            p_list.append((player.position, player.name, player.team))
 
     player_count_list = []
-    p_count = Counter(p)
+    p_count = Counter(p_list)
     for player in p_count:
         player_count_list.append((p_count[player], ' '.join(player)))
 
     player_count_list.sort(key=lambda tup: tup[0], reverse=True)
 
     return render(request, 'fnfl/player_count.html', {'player_count_list': player_count_list})
-
-

@@ -1,7 +1,25 @@
+"""Models.py - Sets tables in Postgresql database.
+Classes - Player, Lineup, Score
+"""
+
 from django.db import models
 from django.utils import timezone
 
+
 class Player(models.Model):
+    """Describe a player.
+
+    Player attribbutes:
+    lineup - the week he is being played
+    position - QB, RB, WR, TE, or K
+    team - team he plays for
+    name - first and last name, just last name, or
+           first initial and lastname.
+    """
+
+    # A player can be in multiple lineups,
+    # but the same player can't be in the
+    # same lineup
     lineup = models.ForeignKey(
         'fnfl.Lineup',
         related_name='player',
@@ -78,7 +96,7 @@ class Player(models.Model):
         (INDIANAPOLIS, 'Indianapolis Colts'),
         (JACKSONVILLE, 'Jacksonville Jaguars'),
         (KANSAS_CITY, 'Kansas City Chiefs'),
-        (LOS_ANGELES, 'Los Angeles Rams'), 
+        (LOS_ANGELES, 'Los Angeles Rams'),
         (MIAMI, 'Miami Dolphins'),
         (MINNESOTA, 'Minnesota Vikings'),
         (NEW_ORLEANS, 'New Orleans Saints'),
@@ -105,7 +123,18 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
+
 class Lineup(models.Model):
+    """Describe a Lineup.
+
+    Lineup attributes:
+    author - user that's creating a lineup
+    week - Week 1 of the season through the
+           Super Bowl
+    created_date - date the lineup was created
+    published_date - date the lineup published
+    """
+
     author = models.ForeignKey(
         'auth.User',
         on_delete=models.CASCADE,
@@ -166,13 +195,33 @@ class Lineup(models.Model):
     published_date = models.DateTimeField(blank=True, null=True)
 
     def publish(self):
+        """Publish the lineup"""
         self.published_date = timezone.now()
         self.save()
 
     def __str__(self):
         return self.week
 
+
 class Score(models.Model):
+    """Score the player for a given lineup
+
+    Attributes:
+    player_to_score - player to score
+    lineup_to_score - the week he played
+    tds - number of touchdowns
+    pass_yds - passing yards
+    ints - interceptions thrown
+    rush_yds - rushing yards
+    rec_yds - receiving yards
+    two_pts - number of two point conversions
+    fgs - field goals
+    xps - extra points
+    week_score - the total week scroe
+
+    Methods:
+    week_score - calculate the week score
+    """
     player_to_score = models.ForeignKey(
         'fnfl.Player',
         related_name='player_to_score',
@@ -200,6 +249,8 @@ class Score(models.Model):
         return self.name_week
 
     def week_score(self):
+        """Calculate the week score"""
+
         total_score = 0
         pass_score = 0
         rush_score = 0
@@ -209,20 +260,21 @@ class Score(models.Model):
                       (self.fgs*3) + self.xps + \
                       (self.two_pts*2) - (self.ints*2)
 
-        if (self.pass_yds >= 300):
+        if self.pass_yds >= 300:
             pass_score = 6 + (int((self.pass_yds-300) / 50) * 3)
         total_score += pass_score
 
-        if (self.rush_yds >= 100):
+        if self.rush_yds >= 100:
             rush_score = 6 +(int((self.rush_yds-100) / 50) * 3)
         total_score += rush_score
 
-        if (self.player_to_score.position == 'WR' and self.rec_yds >= 100):
+        if self.player_to_score.position == 'WR' and self.rec_yds >= 100:
             rec_score = 6 + (int((self.rec_yds-100) / 50) * 3)
 
-        if (self.player_to_score.position != 'WR'):
+        if self.player_to_score.position != 'WR':
             rec_score = int(self.rec_yds / 50) * 3
         total_score += rec_score
 
         return total_score
+
     week_score = property(week_score)
