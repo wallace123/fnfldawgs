@@ -100,17 +100,28 @@ def is_position_full(request, lineup, player, edit=False):
     return False
 
 
-def is_prev_week_players(request, lineup, player):
+def is_prev_week_player(request, lineup, player):
     "Get previous week players so user can't repeat use"""
 
-    prev_week = LINEUP_ORDER.index(lineup)
+    prev_week = LINEUP_ORDER[LINEUP_ORDER.index(lineup.week)-1]
+
+    # Players can be repeated in the playoffs
+    if prev_week in LINEUP_ORDER[16:]:
+        return False
 
     try:
         prev_lineup = Lineup.objects.get(week=prev_week)
         players = Player.objects.filter(lineup=prev_lineup)
-        if player in players:
-            messages.error(request, "You used that player last week. \
-                                     Select another player!")
-            return True
+        player_tup = (player.position, player.name, player.team)
+        for prev_player in players:
+            prev_player_tup = (prev_player.position,
+                               prev_player.name,
+                               prev_player.team)
+            if player_tup == prev_player_tup:
+                messages.error(request, "You used that player last week. \
+                                         Select another player!")
+                return True
     except Lineup.DoesNotExist:
-        return False      
+        return False 
+
+    return False

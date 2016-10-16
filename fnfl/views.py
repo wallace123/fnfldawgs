@@ -9,31 +9,6 @@ from .models import Player, Lineup, Score
 from .forms import PlayerForm, LineupForm, ScoreForm
 from .fnfl_helpers import *
 
-# Globals and helper functions
-
-LINEUP_ORDER = ['Week 1', 'Week 2', 'Week 3',
-                'Week 4', 'Week 5', 'Week 6',
-                'Week 7', 'Week 8', 'Week 9',
-                'Week 10', 'Week 11', 'Week 12',
-                'Week 13', 'Week 14', 'Week 15',
-                'Week 16', 'Week 17', 'Wild Card',
-                'Divisional Round', 'Conference Championship',
-                'Super Bowl']
-
-
-def _get_all_players(request):
-    """Get all players for a particular user"""
-   
-    lineups = Lineup.objects.filter(author=request.user)
-    player_object_list = []
-
-    for lineup in lineups:
-        players = Player.objects.filter(lineup=lineup)
-        for player in players:
-            player_object_list.append(player)
-
-    return player_object_list  
-
 
 # Start Page
 def welcome(request):
@@ -253,7 +228,7 @@ def add_player(request, lineup_pk):
 
     lineup = get_object_or_404(Lineup, pk=lineup_pk)
 
-    if is_lineup_full(lineup):
+    if is_lineup_full(request, lineup):
         return redirect('lineup_detail', lineup_pk=lineup.pk)
 
     if request.method == "POST":
@@ -262,6 +237,9 @@ def add_player(request, lineup_pk):
             player = form.save(commit=False)
 
             if is_position_full(request, lineup, player):
+                return render(request, 'fnfl/add_player.html', {'form': form})
+
+            if is_prev_week_player(request, lineup, player):
                 return render(request, 'fnfl/add_player.html', {'form': form})
 
             player.lineup = lineup
@@ -286,6 +264,9 @@ def edit_player(request, lineup_pk, player_pk):
 
             if is_position_full(request, lineup, player, edit=True):
                 return render(request, 'fnfl/edit_player.html', {'form': form})
+
+            if is_prev_week_player(request, lineup, player):
+                return render(request, 'fnfl/add_player.html', {'form': form})
 
             player.lineup = lineup
             player.save()
