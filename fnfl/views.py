@@ -7,6 +7,32 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Player, Lineup, Score
 from .forms import PlayerForm, LineupForm, ScoreForm
+from .fnfl_helpers import *
+
+# Globals and helper functions
+
+LINEUP_ORDER = ['Week 1', 'Week 2', 'Week 3',
+                'Week 4', 'Week 5', 'Week 6',
+                'Week 7', 'Week 8', 'Week 9',
+                'Week 10', 'Week 11', 'Week 12',
+                'Week 13', 'Week 14', 'Week 15',
+                'Week 16', 'Week 17', 'Wild Card',
+                'Divisional Round', 'Conference Championship',
+                'Super Bowl']
+
+
+def _get_all_players(request):
+    """Get all players for a particular user"""
+   
+    lineups = Lineup.objects.filter(author=request.user)
+    player_object_list = []
+
+    for lineup in lineups:
+        players = Player.objects.filter(lineup=lineup)
+        for player in players:
+            player_object_list.append(player)
+
+    return player_object_list  
 
 
 # Start Page
@@ -226,54 +252,16 @@ def add_player(request, lineup_pk):
     """Add new player"""
 
     lineup = get_object_or_404(Lineup, pk=lineup_pk)
-    player_count = Player.objects.filter(lineup=lineup).count()
-    if player_count == 7:
-        messages.warning(request, "You already have 7 players added to this lineup!")
+
+    if is_lineup_full(lineup):
         return redirect('lineup_detail', lineup_pk=lineup.pk)
-
-    qb_count = 0
-    rb_count = 0
-    wr_count = 0
-    te_count = 0
-    k_count = 0
-    players = Player.objects.filter(lineup=lineup)
-
-    for player in players:
-        if player.position == "QB":
-            qb_count += 1
-        if player.position == "RB":
-            rb_count += 1
-        if player.position == "WR":
-            wr_count += 1
-        if player.position == "TE":
-            te_count += 1
-        if player.position == "K":
-            k_count += 1
 
     if request.method == "POST":
         form = PlayerForm(request.POST)
         if form.is_valid():
             player = form.save(commit=False)
 
-            if player.position == "QB" and qb_count == 1:
-                messages.error(request, "You already have a QB in this lineup. \
-                                         Select another position!")
-                return render(request, 'fnfl/add_player.html', {'form': form})
-            if player.position == "RB" and rb_count == 2:
-                messages.error(request, "You already have two RBs in this lineup. \
-                                         Select another position!")
-                return render(request, 'fnfl/add_player.html', {'form': form})
-            if player.position == "WR" and wr_count == 2:
-                messages.error(request, "You already have two WRs in this lineup. \
-                                         Select another position!")
-                return render(request, 'fnfl/add_player.html', {'form': form})
-            if player.position == "TE" and te_count == 1:
-                messages.error(request, "You already have a TE in this lineup. \
-                                         Select another position!")
-                return render(request, 'fnfl/add_player.html', {'form': form})
-            if player.position == "K" and k_count == 1:
-                messages.error(request, "You already have a K in this lineup. \
-                                         Select another position!")
+            if is_position_full(request, lineup, player):
                 return render(request, 'fnfl/add_player.html', {'form': form})
 
             player.lineup = lineup
@@ -295,6 +283,10 @@ def edit_player(request, lineup_pk, player_pk):
         form = PlayerForm(request.POST, instance=player)
         if form.is_valid():
             player = form.save(commit=False)
+
+            if is_position_full(request, lineup, player, edit=True):
+                return render(request, 'fnfl/edit_player.html', {'form': form})
+
             player.lineup = lineup
             player.save()
             messages.success(request, "Player modified!")
