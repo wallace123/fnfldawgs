@@ -15,6 +15,9 @@ LINEUP_ORDER = ['Week 1', 'Week 2', 'Week 3',
                 'Super Bowl']
 
 
+POSITION_ORDER = ['QB', 'RB', 'WR', 'TE', 'K']
+
+
 def is_playoffs(lineup):
     """Return True if lineup week is a playoff week"""
 
@@ -22,6 +25,31 @@ def is_playoffs(lineup):
         return True
     else:
         return False
+
+def order_lineups(lineups):
+    """Order list of lineups in correct weekly order"""
+
+    ordered_lineups = []
+
+    for item in LINEUP_ORDER:
+        for lineup in lineups:
+            if item == lineup.week:
+                ordered_lineups.append(lineup)
+                
+    return ordered_lineups
+
+
+def order_positions(players):
+    """Order list of players in correct position order"""
+
+    ordered_players = []
+
+    for item in POSITION_ORDER:
+        for player in players:
+            if item == player.position:
+                ordered_players.append(player)
+
+    return ordered_players
 
 
 def is_lineup_full(request, lineup):

@@ -1,6 +1,6 @@
 """Views for fnfldawgs site"""
 
-from collections import Counter
+from collections import Counter, OrderedDict
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib import messages
@@ -64,17 +64,29 @@ def lineup_draft_list(request):
     """Display draft lineups"""
 
     lineups = Lineup.objects.filter(published_date__isnull=True,
-                                    author=request.user).order_by('created_date')
-    return render(request, 'fnfl/lineup_draft_list.html', {'lineups': lineups})
+                                    author=request.user)
+    ordered_lineups = order_lineups(lineups)
+    return render(request, 'fnfl/lineup_draft_list.html', {'lineups': ordered_lineups})
 
 
 @login_required
 def lineup_list(request):
     """Display lineups"""
 
+    ordered_lineups = []
+    ordered_players = []
+    lineups_players = OrderedDict()
     lineups = Lineup.objects.filter(published_date__lte=timezone.now(),
-                                    author=request.user).order_by('published_date')
-    return render(request, 'fnfl/lineup_list.html', {'lineups': lineups})
+                                    author=request.user)
+    ordered_lineups = order_lineups(lineups)
+
+    for lineup in ordered_lineups:
+        players = Player.objects.filter(lineup=lineup)
+        ordered_players = order_positions(players)
+        lineups_players[lineup] = ordered_players
+        ordered_players = []
+
+    return render(request, 'fnfl/lineup_list.html', {'lineups_players': lineups_players})
 
 
 @login_required
