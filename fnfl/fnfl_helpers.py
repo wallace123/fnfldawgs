@@ -1,7 +1,6 @@
 """Helper functions"""
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
+from collections import Counter
 from django.contrib import messages
 from .models import Player, Lineup, Score
 
@@ -14,6 +13,15 @@ LINEUP_ORDER = ['Week 1', 'Week 2', 'Week 3',
                 'Week 16', 'Week 17', 'Wild Card',
                 'Divisional Round', 'Conference Championship',
                 'Super Bowl']
+
+
+def is_playoffs(lineup):
+    """Return True if lineup week is a playoff week"""
+
+    if lineup.week in LINEUP_ORDER[17:]:
+        return True
+    else:
+        return False
 
 
 def is_lineup_full(request, lineup):
@@ -101,13 +109,13 @@ def is_position_full(request, lineup, player, edit=False):
 
 
 def is_prev_week_player(request, lineup, player):
-    """Get previous week players so user can't repeat use"""
+    """Return True if player was used in previous week"""
+
+    # Players can be repeated starting in the playoffs
+    if is_playoffs(lineup):
+        return False
 
     prev_week = LINEUP_ORDER[LINEUP_ORDER.index(lineup.week)-1]
-
-    # Players can be repeated in the playoffs
-    if prev_week in LINEUP_ORDER[16:]:
-        return False
 
     try:
         prev_lineup = Lineup.objects.get(week=prev_week)
@@ -122,6 +130,46 @@ def is_prev_week_player(request, lineup, player):
                                          Select another player!")
                 return True
     except Lineup.DoesNotExist:
-        return False 
+        return False
 
     return False
+
+
+def _get_all_players(request):
+    """Get all players by user and return list of (position, name, team)"""
+
+    lineups = Lineup.objects.filter(author=request.user)
+    p_list = []
+    for lineup in lineups:
+        players = Player.objects.filter(lineup=lineup)
+        for player in players:
+            p_list.append((player.position, player.name, player.team))
+
+    return p_list
+
+
+def get_player_count(request):
+    """Get number of times a player has been used in a lineup"""
+
+    p_list = _get_all_players(request)
+    p_count = Counter(p_list)
+    return p_count
+
+
+def is_player_count_max(request, lineup, player):
+    """Check if player has reached maximum use for season (4 times)"""
+
+    # Hack: Need a better solution
+    # See Issue #6
+    if is_playoffs(lineup):
+        return False
+
+    p_count = get_player_count(request)
+    player_tup = (player.position, player.name, player.team)
+
+    if p_count[player_tup] >= 4:
+        messages.error(request, "You used that player the max times already. \
+                                 Select another player!")
+        return True
+    else:
+        return False

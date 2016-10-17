@@ -242,6 +242,9 @@ def add_player(request, lineup_pk):
             if is_prev_week_player(request, lineup, player):
                 return render(request, 'fnfl/add_player.html', {'form': form})
 
+            if is_player_count_max(request, lineup, player):
+                return render(request, 'fnfl/add_player.html', {'form': form})
+
             player.lineup = lineup
             player.save()
             messages.success(request, "Player added!")
@@ -266,6 +269,9 @@ def edit_player(request, lineup_pk, player_pk):
                 return render(request, 'fnfl/edit_player.html', {'form': form})
 
             if is_prev_week_player(request, lineup, player):
+                return render(request, 'fnfl/add_player.html', {'form': form})
+
+            if is_player_count_max(request, lineup, player):
                 return render(request, 'fnfl/add_player.html', {'form': form})
 
             player.lineup = lineup
@@ -345,22 +351,16 @@ def edit_score(request, lineup_pk, player_pk):
         messages.warning(request, "No score available to edit. Choose Add Score!")
         return redirect('lineup_detail', lineup_pk=lineup.pk)
 
+
 # Count Views
 
 @login_required
 def player_usage(request):
     """Show how many times a player has been used"""
 
-    lineups = Lineup.objects.filter(published_date__lte=timezone.now(),
-                                    author=request.user).order_by('published_date')
-    p_list = []
-    for lineup in lineups:
-        players = Player.objects.filter(lineup=lineup)
-        for player in players:
-            p_list.append((player.position, player.name, player.team))
-
+    p_count = get_player_count(request)
     player_count_list = []
-    p_count = Counter(p_list)
+
     for player in p_count:
         player_count_list.append((p_count[player], ' '.join(player)))
 
