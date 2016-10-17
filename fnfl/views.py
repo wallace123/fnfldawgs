@@ -298,23 +298,23 @@ def add_score(request, lineup_pk, player_pk):
 
     try:
         score = Score.objects.get(lineup_to_score=lineup, player_to_score=player)
-        if score != '':
-            messages.warning(request, "Score already added. Choose Edit Score!")
-            return redirect('lineup_detail', lineup_pk=lineup.pk)
-    except Score.DoesNotExist:
-        pass
 
-    if request.method == "POST":
-        form = ScoreForm(request.POST)
-        if form.is_valid():
-            score = form.save(commit=False)
-            score.lineup_to_score = lineup
-            score.player_to_score = player
-            score.save()
-            messages.success(request, "Added score to player!")
-            return redirect('lineup_detail', lineup_pk=lineup.pk)
-    else:
-        form = ScoreForm()
+        # If we're here then a score already exists for this player
+        messages.warning(request, "Score already added. Choose Edit Score!")
+        return redirect('lineup_detail', lineup_pk=lineup.pk)
+    except Score.DoesNotExist:
+        if request.method == "POST":
+            form = ScoreForm(request.POST)
+            if form.is_valid():
+                score = form.save(commit=False)
+                score.lineup_to_score = lineup
+                score.player_to_score = player
+                score.save()
+                messages.success(request, "Added score to player!")
+                return redirect('lineup_detail', lineup_pk=lineup.pk)
+        else:
+            form = ScoreForm()
+
     return render(request, 'fnfl/add_score.html', {'form': form})
 
 
@@ -327,23 +327,23 @@ def edit_score(request, lineup_pk, player_pk):
 
     try:
         score = Score.objects.get(lineup_to_score=lineup, player_to_score=player)
+
+        # If we're here then a score is available to edit
+        if request.method == "POST":
+            form = ScoreForm(request.POST, instance=score)
+            if form.is_valid():
+                score = form.save(commit=False)
+                score.lineup_to_score = lineup
+                score.player_to_score = player
+                score.save()
+                messages.success(request, "Edited score of player!")
+                return redirect('lineup_detail', lineup_pk=lineup.pk)
+        else:
+            form = ScoreForm(instance=score)
+        return render(request, 'fnfl/edit_score.html', {'form': form})
     except Score.DoesNotExist:
         messages.warning(request, "No score available to edit. Choose Add Score!")
         return redirect('lineup_detail', lineup_pk=lineup.pk)
-
-    if request.method == "POST":
-        form = ScoreForm(request.POST, instance=score)
-        if form.is_valid():
-            score = form.save(commit=False)
-            score.lineup_to_score = lineup
-            score.player_to_score = player
-            score.save()
-            messages.success(request, "Edited score of player!")
-            return redirect('lineup_detail', lineup_pk=lineup.pk)
-    else:
-        form = ScoreForm(instance=score)
-    return render(request, 'fnfl/edit_score.html', {'form': form})
-
 
 # Count Views
 
