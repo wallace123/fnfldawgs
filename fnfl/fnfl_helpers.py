@@ -101,7 +101,7 @@ def is_position_full(request, lineup, player, edit=False):
 
 
 def is_prev_week_player(request, lineup, player):
-    "Get previous week players so user can't repeat use"""
+    """Get previous week players so user can't repeat use"""
 
     prev_week = LINEUP_ORDER[LINEUP_ORDER.index(lineup.week)-1]
 
