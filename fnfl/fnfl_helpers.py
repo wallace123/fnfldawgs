@@ -135,12 +135,19 @@ def is_prev_week_player(request, lineup, player):
     return False
 
 
-def _get_all_players(request):
+def _get_all_players(request, reg_season):
     """Get all players by user and return list of (position, name, team)"""
 
     lineups = Lineup.objects.filter(author=request.user)
     p_list = []
     for lineup in lineups:
+
+        # reg_season flag set = Don't get playoff players
+        if reg_season:
+            if is_playoffs(lineup):
+                # Skip adding players that are used in playoffs
+                continue
+
         players = Player.objects.filter(lineup=lineup)
         for player in players:
             p_list.append((player.position, player.name, player.team))
@@ -148,10 +155,10 @@ def _get_all_players(request):
     return p_list
 
 
-def get_player_count(request):
+def get_player_count(request, reg_season=False):
     """Get number of times a player has been used in a lineup"""
 
-    p_list = _get_all_players(request)
+    p_list = _get_all_players(request, reg_season)
     p_count = Counter(p_list)
     return p_count
 
@@ -159,12 +166,9 @@ def get_player_count(request):
 def is_player_count_max(request, lineup, player):
     """Check if player has reached maximum use for season (4 times)"""
 
-    # Hack: Need a better solution
+    # Get only regular season players
     # See Issue #6
-    if is_playoffs(lineup):
-        return False
-
-    p_count = get_player_count(request)
+    p_count = get_player_count(request, True)
     player_tup = (player.position, player.name, player.team)
 
     if p_count[player_tup] >= 4:
