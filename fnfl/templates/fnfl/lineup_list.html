@@ -2,7 +2,7 @@
 
 {% block content %}
     
-{% for lineup in lineups %}
+{% for lineup, players in lineups_players.items %}
   <div>
     <h1>
       <a href="{% url 'lineup_detail' lineup_pk=lineup.pk %}">{{ lineup.week }}</a>
@@ -10,6 +10,11 @@
     <div class="date">
       <p>published: {{ lineup.published_date }}</p>
     </div>
+    {% for player in players %}
+      <div>
+        <p>{{player.position}} {{player.name}} {{player.team}}</p>
+      </div>
+    {% endfor %} 
   </div>
 {% endfor %}
 
