@@ -23,21 +23,12 @@ def welcome(request):
 def lineup_new(request):
     """Display form to create new lineup"""
 
-    lineups = Lineup.objects.filter(author=request.user)
-    lineup_weeks = []
-
-    # Get already created lineups so user can't create duplicates
-    for lineup in lineups:
-        lineup_weeks.append(lineup.week)
-
     if request.method == "POST":
         form = LineupForm(request.POST)
         if form.is_valid():
             lineup = form.save(commit=False)
 
-            if lineup.week in lineup_weeks:
-                messages.error(request, "You already have a lineup for that week. \
-                               Select another week!")
+            if is_lineup_taken(request, lineup):
                 return render(request, 'fnfl/lineup_new.html', {'form': form})
 
             lineup.author = request.user
@@ -73,9 +64,7 @@ def lineup_draft_list(request):
 def lineup_list(request):
     """Display lineups"""
 
-    ordered_lineups = []
-    ordered_players = []
-    lineups_players = OrderedDict()
+    lineups_players_score = OrderedDict()
     lineups = Lineup.objects.filter(published_date__lte=timezone.now(),
                                     author=request.user)
     ordered_lineups = order_lineups(lineups)
@@ -83,10 +72,16 @@ def lineup_list(request):
     for lineup in ordered_lineups:
         players = Player.objects.filter(lineup=lineup)
         ordered_players = order_positions(players)
-        lineups_players[lineup] = ordered_players
-        ordered_players = []
+        week_score = total_week_score(request, lineup)
 
-    return render(request, 'fnfl/lineup_list.html', {'lineups_players': lineups_players})
+        # for lineups_players_score dictionary
+        # Dictionary key = lineup
+        # Dictionary values are a list. 
+        # list[0] = the ordered players list
+        # list[1] = the weekly score
+        lineups_players_score[lineup] = [ordered_players, week_score]
+
+    return render(request, 'fnfl/lineup_list.html', {'lineups_players_score': lineups_players_score})
 
 
 @login_required
@@ -98,6 +93,10 @@ def lineup_edit(request, lineup_pk):
         form = LineupForm(request.POST, instance=lineup)
         if form.is_valid():
             lineup = form.save(commit=False)
+
+            if is_lineup_taken(request, lineup):
+                return render(request, 'fnfl/lineup_new.html', {'form': form})
+
             lineup.author = request.user
             lineup.save()
             messages.success(request, "Lineup changed!")
@@ -113,7 +112,6 @@ def lineup_detail(request, lineup_pk):
 
     lineup = get_object_or_404(Lineup, pk=lineup_pk)
     players = Player.objects.filter(lineup=lineup)
-    scores = Score.objects.filter(lineup_to_score=lineup)
 
     qb_player = ""
     rb1_player = ""
@@ -197,14 +195,11 @@ def lineup_detail(request, lineup_pk):
             except Score.DoesNotExist:
                 pass
 
-    total_week_score = 0
-
-    for score in scores:
-        total_week_score += score.week_score
+    week_score = total_week_score(request, lineup)
 
     return render(request, 'fnfl/lineup_detail.html',
                   {'lineup': lineup,
-                   'total_week_score': total_week_score,
+                   'week_score': week_score,
                    'qb': qb_player,
                    'rb1': rb1_player,
                    'rb2': rb2_player,
