@@ -1,21 +1,21 @@
 {% extends 'fnfl/base.html' %}
 
 {% block content %}
-    
-{% for lineup, players in lineups_players.items %}
-  <div>
-    <h1>
-      <a href="{% url 'lineup_detail' lineup_pk=lineup.pk %}">{{ lineup.week }}</a>
-    </h1>
-    <div class="date">
-      <p>published: {{ lineup.published_date }}</p>
+<div class="container-fluid">
+  <div class="flex-container-lineups-list">
+{% for lineup, players_score in lineups_players_score.items %}
+    <div class="flex-item-lineup">
+      <h1>
+        <a href="{% url 'lineup_detail' lineup_pk=lineup.pk %}">{{ lineup.week }}</a>
+      </h1>
+        <p>published: {{ lineup.published_date }}</p>
+      {% for player in players_score.0 %}  
+          <p>{{player.position}} {{player.name}} {{player.team}}</p>
+      {% endfor %} 
+          <p style="font-size: 16pt">Total Score: {{players_score.1}}</p>
     </div>
-    {% for player in players %}
-      <div>
-        <p>{{player.position}} {{player.name}} {{player.team}}</p>
-      </div>
-    {% endfor %} 
-  </div>
 {% endfor %}
+  </div>
+</div>
 
 {% endblock %}
