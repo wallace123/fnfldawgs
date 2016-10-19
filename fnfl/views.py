@@ -1,13 +1,16 @@
 """Views for fnfldawgs site"""
 
-from collections import Counter, OrderedDict
+from collections import OrderedDict
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Player, Lineup, Score
 from .forms import PlayerForm, LineupForm, ScoreForm
-from .fnfl_helpers import *
+from .fnfl_helpers import is_lineup_taken, order_lineups, \
+      order_positions, is_lineup_full, is_position_full, \
+      is_prev_week_player, get_player_count, is_player_count_max, \
+      total_week_score
 
 
 # Start Page
@@ -72,16 +75,17 @@ def lineup_list(request):
     for lineup in ordered_lineups:
         players = Player.objects.filter(lineup=lineup)
         ordered_players = order_positions(players)
-        week_score = total_week_score(request, lineup)
+        week_score = total_week_score(lineup)
 
         # for lineups_players_score dictionary
         # Dictionary key = lineup
-        # Dictionary values are a list. 
+        # Dictionary values are a list.
         # list[0] = the ordered players list
         # list[1] = the weekly score
         lineups_players_score[lineup] = [ordered_players, week_score]
 
-    return render(request, 'fnfl/lineup_list.html', {'lineups_players_score': lineups_players_score})
+    return render(request, 'fnfl/lineup_list.html',
+                  {'lineups_players_score': lineups_players_score})
 
 
 @login_required
@@ -195,7 +199,7 @@ def lineup_detail(request, lineup_pk):
             except Score.DoesNotExist:
                 pass
 
-    week_score = total_week_score(request, lineup)
+    week_score = total_week_score(lineup)
 
     return render(request, 'fnfl/lineup_detail.html',
                   {'lineup': lineup,
@@ -249,7 +253,7 @@ def add_player(request, lineup_pk):
             if is_prev_week_player(request, lineup, player):
                 return render(request, 'fnfl/add_player.html', {'form': form})
 
-            if is_player_count_max(request, lineup, player):
+            if is_player_count_max(request, player):
                 return render(request, 'fnfl/add_player.html', {'form': form})
 
             player.lineup = lineup
@@ -278,7 +282,7 @@ def edit_player(request, lineup_pk, player_pk):
             if is_prev_week_player(request, lineup, player):
                 return render(request, 'fnfl/add_player.html', {'form': form})
 
-            if is_player_count_max(request, lineup, player):
+            if is_player_count_max(request, player):
                 return render(request, 'fnfl/add_player.html', {'form': form})
 
             player.lineup = lineup

@@ -19,7 +19,7 @@ POSITION_ORDER = ['QB', 'RB', 'WR', 'TE', 'K']
 
 
 def is_lineup_taken(request, lineup):
-    """Check if lineup week has already been used""" 
+    """Check if lineup week has already been used"""
 
     lineups = Lineup.objects.filter(author=request.user)
     lineup_weeks = []
@@ -39,10 +39,7 @@ def is_lineup_taken(request, lineup):
 def is_playoffs(lineup):
     """Return True if lineup week is a playoff week"""
 
-    if lineup.week in LINEUP_ORDER[17:]:
-        return True
-    else:
-        return False
+    return bool(lineup.week in LINEUP_ORDER[17:])
 
 
 def order_lineups(lineups):
@@ -54,7 +51,7 @@ def order_lineups(lineups):
         for lineup in lineups:
             if item == lineup.week:
                 ordered_lineups.append(lineup)
-                
+
     return ordered_lineups
 
 
@@ -210,7 +207,7 @@ def get_player_count(request, reg_season=False):
     return p_count
 
 
-def is_player_count_max(request, lineup, player):
+def is_player_count_max(request, player):
     """Check if player has reached maximum use for season (4 times)"""
 
     # Get only regular season players
@@ -225,7 +222,7 @@ def is_player_count_max(request, lineup, player):
     else:
         return False
 
-def total_week_score(request, lineup):
+def total_week_score(lineup):
     """Get all player scores for a lineup and total for a week score"""
 
     player_scores = Score.objects.filter(lineup_to_score=lineup)
