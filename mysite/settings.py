@@ -21,7 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
+                           'mm4q(1ti#5qk6kq9@y7qa$%vchwsu$dj&n#t#!cis!p*xz-_6k')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', False)))
@@ -123,14 +124,12 @@ LOGIN_REDIRECT_URL = '/'
 
 LOCAL_DB = os.environ.get('MY_DJANGO_DB')
 if LOCAL_DB:
-    DB_USER =  os.environ.get('DB_USER')
-    DB_PASS = os.environ.get('DB_PASS')
     DATABASES = {
       'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'fnfldawgs',
-        'USER': DB_USER,
-        'PASSWORD': DB_PASS,
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
         'HOST': '127.0.0.1',
         'PORT': '5432',
       }
