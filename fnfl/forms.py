@@ -15,6 +15,7 @@ class PlayerForm(forms.ModelForm):
             'team',
         )
 
+
 class LineupForm(forms.ModelForm):
     """Add Lineup form"""
 
@@ -24,18 +25,10 @@ class LineupForm(forms.ModelForm):
             'week',
         )
 
+
 class ScoreForm(forms.ModelForm):
     """Add Score form"""
 
     class Meta:
         model = Score
-        fields = (
-            'tds',
-            'pass_yds',
-            'ints',
-            'rush_yds',
-            'rec_yds',
-            'two_pts',
-            'fgs',
-            'xps',
-        )
+        exclude = ('player_to_score', 'lineup_to_score')

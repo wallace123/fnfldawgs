@@ -80,20 +80,6 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-# Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'fnfldawgs',
-        'USER': 'myprojectuser',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -135,17 +121,23 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 LOGIN_REDIRECT_URL = '/'
 
-import dj_database_url
-DATABASES['default'] = dj_database_url.config()
+LOCAL_DB = os.environ.get('MY_DJANGO_DB')
+if LOCAL_DB:
+    DB_USER =  os.environ.get('DB_USER')
+    DB_PASS = os.environ.get('DB_PASS')
+    DATABASES = {
+      'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'fnfldawgs',
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+      }
+    }
+else:
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.config()
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-ALLOWED_HOSTS = ['*']
-
-DEBUG = False
-
-try:
-    from .local_settings import *
-except ImportError:
-    pass
 
