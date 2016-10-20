@@ -1,97 +1,54 @@
 {% extends 'fnfl/base.html' %}
 
-
-
 {% block content %}
-
   <div class="container-fluid">
 
 {% if lineup.published_date %}
-
       <div class="date">
-
         {{ lineup.published_date }}
-
       </div>
 
 {% else %} 
-
       <a class="btn btn-default" href="{% url 'lineup_publish' lineup_pk=lineup.pk %}">Publish</a>
 
 {% endif %}
 
-        
-
     <a class="btn btn-default" href="{% url 'lineup_edit' lineup_pk=lineup.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
-
     <a class="btn btn-default" href="{% url 'lineup_remove' lineup_pk=lineup.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
-
     <a class="btn btn-default" href="{% url 'add_player' lineup_pk=lineup.pk %}">Add Player</a>
-
     <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
-
-
 
     <h1>{{ lineup.week }}</h1>
 
 
-
-
-
 {% for player, score in players_scores %}
-
     <div class="flex-container">
-
       <div class="flex-item-button">
 
-              
-
         <button class="btn btn-default dropdown-toggle" type="button"
-
           data-toggle="dropdown">Player Action
-
             <span class="caret"></span>
-
         </button>
 
-
-
           <ul class="dropdown-menu">
-
             <li><a href="{% url 'edit_player' lineup_pk=lineup.pk player_pk=player.pk %}">Edit Player</a></li>
-
             <li><a href="{% url 'remove_player' player_pk=player.pk %}">Remove Player</a></li>
-
             <li><a href="{% url 'add_score' lineup_pk=lineup.pk player_pk=player.pk %}">Add Score</a></li>
-
             <li><a href="{% url 'edit_score' lineup_pk=lineup.pk player_pk=player.pk %}">Edit Score</a></li>
-
           </ul>
-
       </div>
-
-
 
       <div class="flex-item-text">
-
         <p>{{player.position}} {{player.name}} {{player.team}}</p>
-
         <p>Player Score: {{score}}<p>
-
       </div>
-
     </div>
 
 {% endfor %}
 
-
-
     <div class="flex-container">
-
       <p style="font-size: 16pt">Total Score: {{week_score}}</p>
-
     </div>
-
   </div>
 
 {% endblock %}
