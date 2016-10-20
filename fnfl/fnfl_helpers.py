@@ -79,74 +79,27 @@ def is_lineup_full(request, lineup):
         return False
 
 
-def _get_position_count(lineup):
-    """Get a count of all positions in lineup"""
-
-    qb_count = 0
-    rb_count = 0
-    wr_count = 0
-    te_count = 0
-    k_count = 0
-    players = Player.objects.filter(lineup=lineup)
-
-    for player in players:
-        if player.position == "QB":
-            qb_count += 1
-        if player.position == "RB":
-            rb_count += 1
-        if player.position == "WR":
-            wr_count += 1
-        if player.position == "TE":
-            te_count += 1
-        if player.position == "K":
-            k_count += 1
-
-    return qb_count, rb_count, wr_count, te_count, k_count
-
-
 def is_position_full(request, lineup, player, edit=False):
     """Prevent user from adding too many of one position"""
 
-    qb_count, rb_count, wr_count, te_count, k_count = _get_position_count(lineup)
+    players = Player.objects.filter(lineup=lineup)
+    positions = [pos.position for pos in players]
+    position_count = Counter(positions)
+    max_count = 1
+    error_message = "You already have a %s in this lineup. \
+                     Select another position!" % player.position
 
-    if player.position == "QB":
-        if edit:
-            qb_count -= 1
-        if qb_count == 1:
-            messages.error(request, "You already have a QB in this lineup. \
-                                     Select another position!")
-            return True
+    if player.position in ['RB', 'WR']:
+        max_count = 2
+        error_message = "You already have two %ss in this lineup. \
+                         Select another position!" % player.position
 
-    if player.position == "RB":
+    if player.position in position_count.keys():
+        # Fix bug with edit. 
         if edit:
-            rb_count -= 1
-        if rb_count == 2:
-            messages.error(request, "You already have two RBs in this lineup. \
-                                     Select another position!")
-            return True
-
-    if player.position == "WR":
-        if edit:
-            wr_count -= 1
-        if wr_count == 2:
-            messages.error(request, "You already have two WRs in this lineup. \
-                                     Select another position!")
-            return True
-
-    if player.position == "TE":
-        if edit:
-            te_count -= 1
-        if te_count == 1:
-            messages.error(request, "You already have a TE in this lineup. \
-                                     Select another position!")
-            return True
-
-    if player.position == "K":
-        if edit:
-            k_count -= 1
-        if k_count == 1:
-            messages.error(request, "You already have a K in this lineup. \
-                                     Select another position!")
+            position_count[player.position] -= 1
+        if position_count[player.position] == max_count:
+            messages.error(request, error_message)
             return True
 
     return False
