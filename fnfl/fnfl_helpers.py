@@ -93,7 +93,7 @@ def is_position_full(request, lineup, player, edit=False):
                          Select another position!" % player.position
 
     if player.position in position_count.keys():
-        # Fix bug with edit. When user changes player's position. 
+        # Fix bug with edit. When user changes player's position.
         if edit:
             position_count[player.position] -= 1
         if position_count[player.position] == max_count:
