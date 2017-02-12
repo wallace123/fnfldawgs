@@ -44,31 +44,11 @@ def lineup_new(request):
 
 
 @login_required
-def lineup_publish(request, lineup_pk):
-    """Publish lineup"""
-
-    lineup = get_object_or_404(Lineup, pk=lineup_pk)
-    lineup.publish()
-    messages.success(request, "Lineup published!")
-    return redirect('lineup_detail', lineup_pk=lineup.pk)
-
-
-@login_required
-def lineup_draft_list(request):
-    """Display draft lineups"""
-
-    lineups = Lineup.objects.filter(published_date__isnull=True,
-                                    author=request.user)
-    ordered_lineups = order_lineups(lineups)
-    return render(request, 'fnfl/lineup_draft_list.html', {'lineups': ordered_lineups})
-
-
-@login_required
 def lineup_list(request):
     """Display lineups"""
 
     lineups_players_score = OrderedDict()
-    lineups = Lineup.objects.filter(published_date__lte=timezone.now(),
+    lineups = Lineup.objects.filter(created_date__lte=timezone.now(),
                                     author=request.user)
     ordered_lineups = order_lineups(lineups)
 

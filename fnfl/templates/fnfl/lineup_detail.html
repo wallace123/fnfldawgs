@@ -3,15 +3,6 @@
 {% block content %}
   <div class="container-fluid">
 
-{% if lineup.published_date %}
-      <div class="date">
-        {{ lineup.published_date }}
-      </div>
-
-{% else %} 
-      <a class="btn btn-default" href="{% url 'lineup_publish' lineup_pk=lineup.pk %}">Publish</a>
-
-{% endif %}
 
     <a class="btn btn-default" href="{% url 'lineup_edit' lineup_pk=lineup.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
     <a class="btn btn-default" href="{% url 'lineup_remove' lineup_pk=lineup.pk %}"><span class="glyphicon glyphicon-remove"></span></a>

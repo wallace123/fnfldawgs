@@ -8,7 +8,7 @@
       <h1>
         <a href="{% url 'lineup_detail' lineup_pk=lineup.pk %}">{{ lineup.week }}</a>
       </h1>
-        <p>published: {{ lineup.published_date }}</p>
+        <p>created: {{ lineup.created_date }}</p>
       {% for player in players_score.0 %}  
           <p>{{player.position}} {{player.name}} {{player.team}}</p>
       {% endfor %} 

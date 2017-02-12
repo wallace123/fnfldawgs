@@ -47,38 +47,38 @@ class Player(models.Model):
         default=QUARTERBACK,
     )
 
-    DALLAS = 'DAL'
-    WASHINGTON = 'WASH'
-    NEW_YORK_G = 'NYG'
-    PHILIDELPHIA = 'PHI'
     ARIZONA = 'ARI'
-    LOS_ANGELES = 'LA'
-    SAN_FRANSICO = 'SF'
-    SEATTLE = 'SEA'
-    CHICAGO = 'CHI'
-    DETROIT = 'DET'
-    GREEN_BAY = 'GB'
-    MINNESOTA = 'MINN'
     ATLANTA = 'ATL'
-    CAROLINA = 'CAR'
-    NEW_ORLEANS = 'NO'
-    TAMPA_BAY = 'TB'
-    BUFFALO = 'BUF'
-    MIAMI = 'MIA'
-    NEW_ENGLAND = 'NE'
-    NEW_YORK_J = 'NYJ'
-    DENVER = 'DEN'
-    KANSAS_CITY = 'KC'
-    OAKLAND = 'OAK'
-    SAN_DEIGO = 'SD'
     BALTIMORE = 'BAL'
+    BUFFALO = 'BUF'
+    CAROLINA = 'CAR'
+    CHICAGO = 'CHI'
     CINCINATI = 'CIN'
     CLEVELAND = 'CLE'
-    PITTSBURGH = 'PIT'
+    DALLAS = 'DAL'
+    DENVER = 'DEN'
+    DETROIT = 'DET'
+    GREEN_BAY = 'GB'
     HOUSTON = 'HOU'
     INDIANAPOLIS = 'IND'
     JACKSONVILLE = 'JAX'
+    KANSAS_CITY = 'KC'
+    LOS_ANGELES_C = 'LAC'
+    LOS_ANGELES_R = 'LAR'
+    MIAMI = 'MIA'
+    MINNESOTA = 'MINN'
+    NEW_ORLEANS = 'NO'
+    NEW_ENGLAND = 'NE'
+    NEW_YORK_G = 'NYG'
+    NEW_YORK_J = 'NYJ'
+    OAKLAND = 'OAK'
+    PHILIDELPHIA = 'PHI'
+    PITTSBURGH = 'PIT'
+    SAN_FRANSICO = 'SF'
+    SEATTLE = 'SEA'
+    TAMPA_BAY = 'TB'
     TENNESSEE = 'TEN'
+    WASHINGTON = 'WASH'
     TEAM_CHOICES = (
         (ARIZONA, 'Arizona Cardinals'),
         (ATLANTA, 'Atlanta Falcons'),
@@ -96,7 +96,8 @@ class Player(models.Model):
         (INDIANAPOLIS, 'Indianapolis Colts'),
         (JACKSONVILLE, 'Jacksonville Jaguars'),
         (KANSAS_CITY, 'Kansas City Chiefs'),
-        (LOS_ANGELES, 'Los Angeles Rams'),
+        (LOS_ANGELES_C, 'Los Angeles Chargers'),
+        (LOS_ANGELES_R, 'Los Angeles Rams'),
         (MIAMI, 'Miami Dolphins'),
         (MINNESOTA, 'Minnesota Vikings'),
         (NEW_ORLEANS, 'New Orleans Saints'),
@@ -106,7 +107,6 @@ class Player(models.Model):
         (OAKLAND, 'Oakland Raiders'),
         (PHILIDELPHIA, 'Philidelphia Eagles'),
         (PITTSBURGH, 'Pittsburgh Steelers'),
-        (SAN_DEIGO, 'San Diego Chargers'),
         (SAN_FRANSICO, 'San Fransico 49ers'),
         (SEATTLE, 'Seattle Seahawks'),
         (TAMPA_BAY, 'Tampa Bay Buccaneers'),
@@ -132,7 +132,6 @@ class Lineup(models.Model):
     week - Week 1 of the season through the
            Super Bowl
     created_date - date the lineup was created
-    published_date - date the lineup published
     """
 
     author = models.ForeignKey(
@@ -192,12 +191,6 @@ class Lineup(models.Model):
     )
 
     created_date = models.DateTimeField(default=timezone.now)
-    published_date = models.DateTimeField(blank=True, null=True)
-
-    def publish(self):
-        """Publish the lineup"""
-        self.published_date = timezone.now()
-        self.save()
 
     def __str__(self):
         return self.week
