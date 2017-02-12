@@ -1,0 +1,30 @@
+# A collection of helpful commands I use for testing
+
+# Dropping the Database
+1. sudo su - postgres
+2. psql
+3. DROP DATABASE fnfldawgs;
+4. \q
+5. exit
+
+# Recreating the Database
+1. sudo su - postgres
+2. psql
+3. CREATE DATABASE fnfldawgs;
+4. CREATE USER myprojectuser WITH PASSWORD 'password'; # Not needed if user already created
+5. ALTER ROLE myprojectuser SET client_encoding TO 'utf8';
+6. ALTER ROLE myprojectuser SET default_transaction_isolation TO 'read committed';
+7. ALTER ROLE myprojectuser SET timezone TO 'UTC';
+8. GRANT ALL PRIVILEGES ON DATABASE fnfldawgs TO myprojectuser;
+9. \q
+10. exit
+
+# Starting up site with clean database
+1. source myvenv/bin/activate
+2. python manage.py migrate
+3. python manage.py createsuperuser
+4. python manage.py runserver
+
+# Restoring a Database from heroku backup
+1. pg_restore -d fnfldawgs -U myprojectuser -c ~/Downloads/fbd23d9a-f28c-4e30-9420-ced5a470d563  # Will likely have errors, but data will be there
+
