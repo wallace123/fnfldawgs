@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', False)))
 
-ALLOWED_HOSTS = ['www.fnfldawgs.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['www.fnfldawgs.com', '0.0.0.0', '127.0.0.1', 'localhost']
 SECURE_SSL_REDIRECT = bool(int(os.environ.get('DJANGO_ENABLE_SSL', True)))
 
 # Application definition
@@ -122,15 +122,15 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 LOGIN_REDIRECT_URL = '/'
 
-LOCAL_DB = os.environ.get('MY_DJANGO_DB')
+LOCAL_DB = os.environ.get('DJANGO_DB')
 if LOCAL_DB:
     DATABASES = {
       'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'fnfldawgs',
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASS'),
-        'HOST': '127.0.0.1',
+        'USER': 'pguser',
+        'PASSWORD': 'pguser',
+        'HOST': '0.0.0.0',
         'PORT': '5432',
       }
     }
@@ -140,4 +140,3 @@ else:
     DATABASES['default'] = dj_database_url.config()
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
