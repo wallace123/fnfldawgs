@@ -1,22 +1,6 @@
-body {
-    padding-left: 0;
-}
-
-.page-header {
-    background-color: #555FED;
-    margin-top: 0pt;
-    margin-right: 5pt;
-    padding-top: 10pt;
-}
-
-.page-header h1, .page-header h1 a, .page-header h1 a:visited, .page-header h1 a:active {
-    color: white;
-    font-size: 36pt;
-    text-decoration: none;
-}
-
 .content {
     margin-left: 20px;
+    margin-right: 20px;
 }
 
 .date {
@@ -29,20 +13,6 @@ body {
 
 .post-form textarea, .post-form input {
     width: 500;
-}
-
-.top-menu, .top-menu:hover, .top-menu:visited {
-    color: #ffffff;
-    float: right;
-    font-size: 26pt;
-    margin-right: 10px;
-}
-
-.top-menu-logout, .top-menu-logout:hover, .top-menu-logout:visited {
-    color: #ffffff;
-    float: right;
-    font-size: 16pt;
-    margin-right: 10px;
 }
 
 .flex-container {
