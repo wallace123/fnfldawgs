@@ -18,51 +18,37 @@
             crossorigin="anonymous">
       </script>
       <link rel="stylesheet" href="{% static 'css/fnfl.css' %}">
-      <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
+      <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
       <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
 
 <body>
-  <div class="page-header">
+  <nav class="navbar navbar-default">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-xs-4 col-md-6 text-left">
-          <h1>
-            <a href="{% url 'welcome' %}">FNFL Dawgs</a>
-          </h1>
-        </div>
-        <div class="col-xs-8 col-md-6 text-right">
-{% if user.is_authenticated %}
-          <div class="row">
-            <div class="col-xs-12 col-md-12 text-right">
-              <p class="top-menu-logout">
-                {{ user.username }} (<a style="color:white" href="{% url 'logout' %}">log out</a>)
-              </p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-8 col-md-6 pull-right">
-              <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button"
-                data-toggle="dropdown">Menu
-                <span class="caret"></span>
-              </button>
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{% url 'welcome' %}">FNFL Dawgs</a>
+      </div>
 
-              <ul class="dropdown-menu">
-                <li><a href="{% url 'lineup_new' %}">New Lineup</a></li>
-                <li><a href="{% url 'lineup_list' %}">Published Lineups</a></li>
-                <li><a href="{% url 'player_usage' %}">Player Usage</a></li>
-              </ul>
-              </div>
-            </div>
-          </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+{% if user.is_authenticated %}
+          <li><a href="{% url 'lineup_new' %}">New Lineup</a></li>
+          <li><a href="{% url 'lineup_list' %}">Published Lineups</a></li>
+          <li><a href="{% url 'player_usage' %}">Player Usage</a></li>
+          <li><a href="{% url 'logout' %}">Log Out</a></li>
 {% else %}
-          <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
+          <li><a href="{% url 'login' %}">Login</a></li>
 {% endif %}
-        </div>
+        </ul>
       </div>
     </div>
-  </div>
+  </nav>
         
   <div class="content container-fluid">
     <div class="row">
