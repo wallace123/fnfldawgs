@@ -10,6 +10,36 @@ Fork the project on github and git clone your fork, e.g.:
 git clone https://github.com/<username>/fnfldawgs.git
 ```
 
+# Development with Docker
+
+I created a Docker Image which contains all the requirements necessary for local development. The Docker Image source can be found at https://github.com/wallace123/docker-fnfldawgs. The Docker Image is hosted on docker hub at https://hub.docker.com/r/wallace123/docker-fnfldawgs/.
+
+For first time use, run the following commands.
+
+```
+$ docker run -it --name fnfldawgs -v /path/to/fnfldawgs:/fnfldawgs -p 8000:8000 -p 5432:5432 wallace123/docker-fnfldawgs /bin/bash
+```
+
+After running the above command, you'll have a shell inside the docker container. Next, run the setup.sh and start.sh scripts.
+
+```
+# ./setup.sh
+# ./start.sh
+```
+
+When you're finished with your development session, you can type "exit" to stop the container and exit back to your host shell.
+
+To start the container back up for future development sessions, run the following commands.
+
+```
+$ docker start fnfldawgs
+$ docker attach fnfldawgs
+<you may have to press enter after running the attach command to get the shell>
+# ./start.sh
+```
+
+# Development using Virtual Environment and Local Postgresql
+
 Create a virtualenv using Python3 and install dependencies. I develop on Ubuntu so the steps below apply to my development environment. Modify for your operating system as appropriate.
 
 ```
