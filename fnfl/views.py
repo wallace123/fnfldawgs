@@ -51,20 +51,28 @@ def lineup_list(request):
     lineups = Lineup.objects.filter(created_date__lte=timezone.now(),
                                     author=request.user)
     ordered_lineups = order_lineups(lineups)
+    p_count = get_player_count(request)
 
     for lineup in ordered_lineups:
         ordered_players = order_positions(Player.objects.filter(lineup=lineup))
+
+        player_count = []
+        for player in ordered_players:
+            item = (player, p_count[(player.position, player.name, player.team)])
+            player_count.append(item)
+
         week_score = total_week_score(lineup)
 
         # lineups_players_score is a dictionary
         # Dictionary key = lineup
         # Dictionary values are a list.
-        # list[0] = the ordered players list
+        # list[0] = the ordered players list with count of times used
         # list[1] = the weekly score
-        lineups_players_score[lineup] = [ordered_players, week_score]
+        lineups_players_score[lineup] = [player_count, week_score]
 
     return render(request, 'fnfl/lineup_list.html',
-                  {'lineups_players_score': lineups_players_score})
+                  {'lineups_players_score': lineups_players_score}
+                 )
 
 
 @login_required

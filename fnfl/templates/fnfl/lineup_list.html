@@ -1,6 +1,12 @@
 {% extends 'fnfl/base.html' %}
 
 {% block content %}
+<div>
+    <h1>Player Usage Color Coding</h1>
+    <p style="color:red">Players used 4 or more times in red</p>
+    <p style="color:orange">Players used 3 times in orange</p>
+    <p>Players used 2 or less times in black</p>
+</div>
 <div class="container-fluid">
   <div class="flex-container-lineups-list">
 {% for lineup, players_score in lineups_players_score.items %}
@@ -9,13 +15,22 @@
         <a href="{% url 'lineup_detail' lineup_pk=lineup.pk %}">{{ lineup.week }}</a>
       </h1>
         <p>created: {{ lineup.created_date }}</p>
-      {% for player in players_score.0 %}  
-          <p>{{player.position}} {{player.name}} {{player.team}}</p>
-      {% endfor %} 
-          <p style="font-size: 16pt">Total Score: {{players_score.1}}</p>
+{% for player, count in players_score.0 %}  
+{% if count >= 4 %}
+        <p style="color:red">{{player.position}} {{player.name}} {{player.team}}</p>
+{% endif %}
+{% if count == 3 %}
+        <p style="color:orange">{{player.position}} {{player.name}} {{player.team}}</p>
+{% endif %}
+{% if count <= 2 %}
+        <p>{{player.position}} {{player.name}} {{player.team}}</p>
+{% endif %}
+{% endfor %} 
+        <p style="font-size: 16pt">Total Score: {{players_score.1}}</p>
     </div>
 {% endfor %}
   </div>
 </div>
+
 
 {% endblock %}
