@@ -7,7 +7,6 @@
     <a class="btn btn-default" href="{% url 'lineup_edit' lineup_pk=lineup.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
     <a class="btn btn-default" href="{% url 'lineup_remove' lineup_pk=lineup.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
     <a class="btn btn-default" href="{% url 'add_player' lineup_pk=lineup.pk %}">Add Player</a>
-    <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
 
     <h1>{{ lineup.week }}</h1>
 

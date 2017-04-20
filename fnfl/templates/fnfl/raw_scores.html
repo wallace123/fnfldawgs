@@ -1,0 +1,16 @@
+{% extends 'fnfl/base.html' %}
+
+{% block content %}
+<div>
+    <h1>Raw Points</h1>
+</div>
+<div>
+    <h3>QB Raw Points: {{raw_score_dict.QB}}</h3>
+    <h3>RB Raw Points: {{raw_score_dict.RB}}</h3>
+    <h3>WR Raw Points: {{raw_score_dict.WR}}</h3>
+    <h3>TE Raw Points: {{raw_score_dict.TE}}</h3>
+    <h3>K Raw Points: {{raw_score_dict.K}}</h3>
+    <h3>Total Raw Points: {{raw_score_dict.RAW_POINTS}}</h3>
+</div>
+
+{% endblock %}

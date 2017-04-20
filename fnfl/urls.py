@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^lineup/(?P<lineup_pk>\d+)/player/(?P<player_pk>\d+)/edit/$', views.edit_player, name="edit_player"),
     url(r'^lineup/(?P<lineup_pk>\d+)/player/(?P<player_pk>\d+)/score/edit/$', views.edit_score, name="edit_score"),
     url(r'^player/count/$', views.player_usage, name='player_usage'),
+    url(r'^rawscores/$', views.raw_scores, name='raw_scores'),
 ]

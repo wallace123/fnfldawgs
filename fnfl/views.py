@@ -10,7 +10,7 @@ from .forms import PlayerForm, LineupForm, ScoreForm
 from .fnfl_helpers import is_lineup_taken, order_lineups, \
       order_positions, is_lineup_full, is_position_full, \
       is_prev_week_player, get_player_count, is_player_count_max, \
-      total_week_score
+      total_week_score, is_playoffs
 
 
 # Start Page
@@ -269,6 +269,43 @@ def edit_score(request, lineup_pk, player_pk):
         messages.warning(request, "No score available to edit. Choose Add Score!")
         return redirect('lineup_detail', lineup_pk=lineup.pk)
 
+
+@login_required
+def raw_scores(request):
+    """Cumulative score for all positions"""
+
+    lineups = Lineup.objects.filter(created_date__lte=timezone.now(),
+                                    author=request.user)
+    raw_score_dict = {'QB': 0, 'RB': 0, 'WR': 0, 'TE': 0, 'K': 0, 'RAW_POINTS': 0}
+
+    for lineup in lineups:
+        if is_playoffs(lineup):
+            # Only score regular season
+            continue
+
+        players = Player.objects.filter(lineup=lineup)
+
+        for player in players:
+            try:
+                score = Score.objects.get(lineup_to_score=lineup, player_to_score=player)
+                if player.position == 'QB':
+                    raw_score_dict['QB'] += score.week_score
+                elif player.position == 'RB':
+                    raw_score_dict['RB'] += score.week_score
+                elif player.position == 'WR':
+                    raw_score_dict['WR'] += score.week_score
+                elif player.position == 'TE':
+                    raw_score_dict['TE'] += score.week_score
+                elif player.position == 'K':
+                    raw_score_dict['K'] += score.week_score
+            except Score.DoesNotExist:
+                pass
+
+        raw_score_dict['RAW_POINTS'] += total_week_score(lineup)
+
+    return render(request, 'fnfl/raw_scores.html',
+                  {'raw_score_dict': raw_score_dict}
+                 )
 
 # Count Views
 @login_required
