@@ -66,7 +66,7 @@ class Player(models.Model):
     LOS_ANGELES_C = 'LAC'
     LOS_ANGELES_R = 'LAR'
     MIAMI = 'MIA'
-    MINNESOTA = 'MINN'
+    MINNESOTA = 'MIN'
     NEW_ORLEANS = 'NO'
     NEW_ENGLAND = 'NE'
     NEW_YORK_G = 'NYG'
@@ -78,7 +78,7 @@ class Player(models.Model):
     SEATTLE = 'SEA'
     TAMPA_BAY = 'TB'
     TENNESSEE = 'TEN'
-    WASHINGTON = 'WASH'
+    WASHINGTON = 'WAS'
     TEAM_CHOICES = (
         (ARIZONA, 'Arizona Cardinals'),
         (ATLANTA, 'Atlanta Falcons'),
