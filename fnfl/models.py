@@ -64,7 +64,7 @@ class Player(models.Model):
     JACKSONVILLE = 'JAX'
     KANSAS_CITY = 'KC'
     LOS_ANGELES_C = 'LAC'
-    LOS_ANGELES_R = 'LAR'
+    LOS_ANGELES_R = 'LA'
     MIAMI = 'MIA'
     MINNESOTA = 'MIN'
     NEW_ORLEANS = 'NO'
