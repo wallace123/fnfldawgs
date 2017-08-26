@@ -1,5 +1,6 @@
 """Views for fnfldawgs site"""
 
+import json
 from collections import OrderedDict
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -10,7 +11,8 @@ from .forms import PlayerForm, LineupForm, ScoreForm
 from .fnfl_helpers import is_lineup_taken, order_lineups, \
       order_positions, is_lineup_full, is_position_full, \
       is_prev_week_player, get_player_count, is_player_count_max, \
-      total_week_score, is_playoffs
+      total_week_score, is_playoffs, get_gid, get_json, get_stats, \
+      nflcom_week
 
 
 # Start Page
@@ -164,7 +166,7 @@ def add_player(request, lineup_pk):
             messages.success(request, "Player added!")
             return redirect('lineup_detail', lineup_pk=lineup.pk)
     else:
-        form = PlayerForm()
+        form = PlayerForm(initial={"name": "C.Palmer"})
 
     return render(request, 'fnfl/add_player.html', {'form': form})
 
@@ -220,6 +222,16 @@ def add_score(request, lineup_pk, player_pk):
     player = get_object_or_404(Player, pk=player_pk)
 
     try:
+        week = nflcom_week(lineup.week)
+        gid = get_gid("2017", "REG", week, player.team)
+        #print(gid)
+        stats = json.loads(get_json(gid))
+        tds, pass_yds, ints, rush_yds, rec_yds, two_pts, fgs, xps = get_stats(gid, stats, player)
+        #print(tds, pass_yds, ints, rush_yds, rec_yds, two_pts, fgs, xps)
+    except:
+        tds, pass_yds, ints, rush_yds, rec_yds, two_pts, fgs, xps = 0, 0, 0, 0, 0, 0, 0, 0
+
+    try:
         score = Score.objects.get(lineup_to_score=lineup, player_to_score=player)
 
         # If we're here then a score already exists for this player
@@ -236,7 +248,15 @@ def add_score(request, lineup_pk, player_pk):
                 messages.success(request, "Added score to player!")
                 return redirect('lineup_detail', lineup_pk=lineup.pk)
         else:
-            form = ScoreForm()
+            form = ScoreForm(initial={"tds": tds,
+                                      "pass_yds": pass_yds,
+                                      "ints": ints,
+                                      "rush_yds": rush_yds,
+                                      "rec_yds": rec_yds,
+                                      "two_pts": two_pts,
+                                      "fgs": fgs,
+                                      "xps": xps,
+                                      }) 
 
     return render(request, 'fnfl/add_score.html', {'form': form})
 

@@ -1,5 +1,8 @@
 """Helper functions"""
 
+import urllib.request
+import xml.etree.ElementTree
+import json
 from collections import Counter
 from django.contrib import messages
 from .models import Player, Lineup, Score
@@ -184,3 +187,84 @@ def total_week_score(lineup):
         total_score += score.week_score
 
     return total_score
+
+
+def get_gid(season, stype, week, team):
+    """Gets the GID for getting statsu from nfl.com"""
+    req = "http://www.nfl.com/ajax/scorestrip?season=%s&seasonType=%s&week=%s" % (season, stype, week)
+    resp = urllib.request.urlopen(req).read()
+    resp = str(resp, 'utf-8')
+
+    e = xml.etree.ElementTree.fromstring(resp)
+    for games in e.iter('g'):
+        if games.attrib['h'] == team or games.attrib['v'] == team:
+            return games.attrib['eid']
+
+    return None
+
+
+def get_json(gid):
+    """Gets the json formatted states from nfl.com"""
+    req = "http://www.nfl.com/liveupdate/game-center/%s/%s_gtd.json" % (gid, gid)
+    resp = urllib.request.urlopen(req).read()
+    resp = str(resp, 'utf-8')
+
+    return resp
+
+
+def get_stats(gid, stats, player):
+    """Parses the json stats to populate a player's stats"""
+    tds = 0
+    pass_yds = 0
+    ints = 0
+    rush_yds = 0
+    rec_yds = 0
+    two_pts = 0
+    fgs = 0
+    xps = 0
+
+    if stats[gid]['away']['abbr'] == player.team:
+        field = 'away'
+    else:
+        field = 'home'
+
+    for key in stats[gid][field]['stats']['kicking'].keys():
+        if stats[gid][field]['stats']['kicking'][key]['name'] == player.name:
+            fgs = stats[gid][field]['stats']['kicking'][key]['fgm']
+            xps = stats[gid][field]['stats']['kicking'][key]['xpmade']
+
+    for key in stats[gid][field]['stats']['passing'].keys():
+        if stats[gid][field]['stats']['passing'][key]['name'] == player.name:
+            pass_yds += stats[gid][field]['stats']['passing'][key]['yds']
+            tds += stats[gid][field]['stats']['passing'][key]['tds']
+            ints += stats[gid][field]['stats']['passing'][key]['ints']
+            two_pts += stats[gid][field]['stats']['passing'][key]['twoptm']
+
+    for key in stats[gid][field]['stats']['rushing'].keys():
+        if stats[gid][field]['stats']['rushing'][key]['name'] == player.name:
+            rush_yds += stats[gid][field]['stats']['rushing'][key]['yds']
+            tds += stats[gid][field]['stats']['rushing'][key]['tds']
+            two_pts += stats[gid][field]['stats']['rushing'][key]['twoptm']
+
+    for key in stats[gid][field]['stats']['receiving'].keys():
+        if stats[gid][field]['stats']['receiving'][key]['name'] == player.name:
+            rec_yds += stats[gid][field]['stats']['receiving'][key]['yds']
+            tds += stats[gid][field]['stats']['receiving'][key]['tds']
+            two_pts += stats[gid][field]['stats']['receiving'][key]['twoptm']
+
+    #return stats[gid][field]['stats']
+    return tds, pass_yds, ints, rush_yds, rec_yds, two_pts, fgs, xps
+
+
+def nflcom_week(week):
+    """Modifies the week from the DB to an nfl.com week"""
+    if week == "Wild Card":
+        return "18"
+    elif week == "Divisional Round":
+        return "19"
+    elif week == "Conference Championship":
+        return "20"
+    elif week == "Super Bowl":
+        return "21"
+    else:
+        return week.split()[1]
