@@ -128,6 +128,16 @@ def lineup_detail(request, lineup_pk):
 
 
 @login_required
+def lineup_email(request, lineup_pk):
+    """Display lineup for email copy/paste"""
+
+    lineup = get_object_or_404(Lineup, pk=lineup_pk)
+    ordered_players = order_positions(Player.objects.filter(lineup=lineup))
+
+    return render(request, 'fnfl/lineup_email.html', {'ordered_players': ordered_players})
+
+
+@login_required
 def lineup_remove(request, lineup_pk):
     """Remove lineup"""
 

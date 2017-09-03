@@ -1,0 +1,16 @@
+{% extends 'fnfl/base.html' %}
+
+{% block content %}
+
+<div>
+  <h3>Copy and paste lineup into email</h3>
+</div>
+
+{% for player in ordered_players %}
+<div>
+  <p>{{player.position}} {{player.name}} {{player.team}}</p>
+</div>
+
+{% endfor %}
+
+{% endblock %}

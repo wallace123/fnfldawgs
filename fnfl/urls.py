@@ -5,6 +5,7 @@ urlpatterns = [
     url(r'^$', views.welcome, name='welcome'),
     url(r'^lineup/$', views.lineup_list, name='lineup_list'),
     url(r'^lineup/(?P<lineup_pk>\d+)/$', views.lineup_detail, name='lineup_detail'),
+    url(r'^lineup/(?P<lineup_pk>\d+)/email$', views.lineup_email, name='lineup_email'),
     url(r'^lineup/new/$', views.lineup_new, name='lineup_new'),
     url(r'^lineup/(?P<lineup_pk>\d+)/edit/$', views.lineup_edit, name='lineup_edit'),
     url(r'^lineup/(?P<lineup_pk>\d+)/remove/$', views.lineup_remove, name='lineup_remove'),
