@@ -259,6 +259,7 @@ def get_stats(gid, stats, player):
 def nflcom_week(week):
     """Modifies the week from the DB to an nfl.com week"""
     if week == "Wild Card":
+        print("in Wild Card")
         return "18"
     elif week == "Divisional Round":
         return "19"

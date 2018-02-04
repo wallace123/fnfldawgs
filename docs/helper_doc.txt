@@ -11,11 +11,11 @@
 1. sudo su - postgres
 2. psql
 3. CREATE DATABASE fnfldawgs;
-4. CREATE USER myprojectuser WITH PASSWORD 'password'; # Not needed if user already created
-5. ALTER ROLE myprojectuser SET client_encoding TO 'utf8';
-6. ALTER ROLE myprojectuser SET default_transaction_isolation TO 'read committed';
-7. ALTER ROLE myprojectuser SET timezone TO 'UTC';
-8. GRANT ALL PRIVILEGES ON DATABASE fnfldawgs TO myprojectuser;
+4. CREATE USER pguser WITH PASSWORD 'pguser'; # Not needed if user already created
+5. ALTER ROLE pguser SET client_encoding TO 'utf8';
+6. ALTER ROLE pguser SET default_transaction_isolation TO 'read committed';
+7. ALTER ROLE pguser SET timezone TO 'UTC';
+8. GRANT ALL PRIVILEGES ON DATABASE fnfldawgs TO pguser;
 9. \q
 10. exit
 
@@ -26,5 +26,5 @@
 4. python manage.py runserver
 
 # Restoring a Database from heroku backup
-1. pg_restore -d fnfldawgs -U myprojectuser -c ~/Downloads/fbd23d9a-f28c-4e30-9420-ced5a470d563  # Will likely have errors, but data will be there
+1. pg_restore -h 127.0.0.1 -d fnfldawgs -U pguser -c ~/Downloads/fbd23d9a-f28c-4e30-9420-ced5a470d563  # Will likely have errors, but data will be there
 

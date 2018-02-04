@@ -233,7 +233,11 @@ def add_score(request, lineup_pk, player_pk):
 
     try:
         week = nflcom_week(lineup.week)
-        gid = get_gid("2017", "REG", week, player.team)
+        if is_playoffs(lineup):
+            stype = "POST"
+        else:
+            stype = "REG"
+        gid = get_gid("2017", stype, week, player.team)
         #print(gid)
         stats = json.loads(get_json(gid))
         tds, pass_yds, ints, rush_yds, rec_yds, two_pts, fgs, xps = get_stats(gid, stats, player)
