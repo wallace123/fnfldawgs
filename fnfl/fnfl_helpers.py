@@ -266,6 +266,6 @@ def nflcom_week(week):
     elif week == "Conference Championship":
         return "20"
     elif week == "Super Bowl":
-        return "21"
+        return "22"
     else:
         return week.split()[1]
