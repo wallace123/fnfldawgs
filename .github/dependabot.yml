@@ -1,8 +1,9 @@
 version: 2
 updates:
   - package-ecosystem: "pip"
-    directories: "/"
-    schedule: "daily"
+    directory: "/"
+    schedule:
+      interval: "daily"
     labels:
       - "updates"
       - "more_secure"
